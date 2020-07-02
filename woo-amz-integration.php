@@ -9,14 +9,14 @@
  * that starts the plugin.
  *
  * @link              https://lightyourhome.com
- * @since             1.0.0
+ * @since             0.1.0
  * @package           Woo_Amz_Integration
  *
  * @wordpress-plugin
  * Plugin Name:       WooCommerce Amazon Integration
  * Plugin URI:        https://lightyourhome.com
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           1.0.0
+ * Version:           0.1.0
  * Author:            Jim Merk
  * Author URI:        https://lightyourhome.com
  * License:           GPL-2.0+
@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'WOO_AMZ_INTEGRATION_VERSION', '1.0.0' );
+define( 'WOO_AMZ_INTEGRATION_VERSION', '0.1.0' );
 
 /**
  * The code that runs during plugin activation.
@@ -65,13 +65,23 @@ register_deactivation_hook( __FILE__, 'deactivate_woo_amz_integration' );
 require plugin_dir_path( __FILE__ ) . 'includes/class-woo-amz-integration.php';
 
 /**
+ * The class responsible for communicating with the woocommerce rest api
+ */
+require plugin_dir_path( __FILE__ ) . 'woo-rest-api.php';
+
+
+
+
+
+
+/**
  * Begins execution of the plugin.
  *
  * Since everything within the plugin is registered via hooks,
  * then kicking off the plugin from this point in the file does
  * not affect the page life cycle.
  *
- * @since    1.0.0
+ * @since    0.1.0
  */
 function run_woo_amz_integration() {
 
