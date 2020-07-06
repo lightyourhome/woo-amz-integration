@@ -16,7 +16,7 @@
  * Plugin Name:       WooCommerce Amazon Integration
  * Plugin URI:        https://lightyourhome.com
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           0.1.0
+ * Version:           0.3.0
  * Author:            Jim Merk
  * Author URI:        https://lightyourhome.com
  * License:           GPL-2.0+
@@ -55,7 +55,44 @@ function deactivate_woo_amz_integration() {
 	Woo_Amz_Integration_Deactivator::deactivate();
 }
 
+function tfs_create_custom_table() {
+
+	global $wpdb;
+
+	$charset_collate = $wpdb->get_charset_collate();
+
+	$tbl_name = $wpdb->prefix . 'tfs_amz_int_data';
+
+	$sql = "CREATE TABLE IF NOT EXISTS $tbl_name (
+		id mediumint(9) NOT NULL AUTO_INCREMENT,
+		products_to_process mediumint(9) NOT NULL,
+		current_page VARCHAR(100) NOT NULL,
+		products_processed mediumint(9) NOT NULL,
+		completed BOOLEAN,
+		UNIQUE KEY id (id)
+	) $charset_collate;";
+
+	if ( ! function_exists('dbDelta') ) {
+
+		require_once( ABSPATH . 'wp-admin/includes/upgrade,php' );
+
+	}
+
+	add_option( $wpdb->prefix . 'tfs_amz_int_data_version', '0.1.0' );
+
+	dbDelta( $sql );
+
+}
+
+/**
+ * Activation Hooks
+ */
 register_activation_hook( __FILE__, 'activate_woo_amz_integration' );
+register_activation_hook( __FILE__, 'tfs_create_custom_table' );
+
+/**
+ * Deactivation Hooks
+ */
 register_deactivation_hook( __FILE__, 'deactivate_woo_amz_integration' );
 
 /**
@@ -69,9 +106,57 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-woo-amz-integration.php';
  */
 require plugin_dir_path( __FILE__ ) . 'woo-rest-api.php';
 
+/**
+ * The class responsible for interacting with the Wordpress REST API
+ */
+require plugin_dir_path( __FILE__ ) . 'wp-rest-api.php';
+
+/**
+ * The class responsible for interacting with the Wordpress REST API
+ */
+require plugin_dir_path( __FILE__ ) . 'options.php';
+
+function tfs_enqueue_scripts() {
+
+	wp_register_script('tfs_woo_amz_int', site_url('/wp-content/plugins/woo-amz-integration/admin/js/woo-amz-integration-admin.js?07032020'), true);
+	wp_enqueue_script( 'tfs_woo_amz_int' );
+
+}
+add_action( 'admin_enqueue_scripts', 'tfs_enqueue_scripts');
 
 
 
+function tfs_processing_script_query_string() {
+
+	$query_string = $_SERVER['QUERY_STRING'];
+
+	if ( $query_string === '0800fc577294c34e0b28ad2839435945' ) {
+
+		return true;
+
+	} else {
+
+		return;
+	
+	}
+
+}
+
+function tfs_trigger_script_query_string() {
+
+	$query_string = $_SERVER['QUERY_STRING'];
+
+	if ( $query_string === '962e52217134c1f7556fefeb1bfa1e35' ) {
+
+		return true;
+
+	} else {
+
+		return;
+	
+	}
+
+}
 
 
 /**
@@ -85,8 +170,20 @@ require plugin_dir_path( __FILE__ ) . 'woo-rest-api.php';
  */
 function run_woo_amz_integration() {
 
-	$plugin = new Woo_Amz_Integration();
-	$plugin->run();
+	if ( tfs_trigger_script_query_string() == true ) {
+
+		$plugin = new Woo_Amz_Integration();
+		$plugin->run();
+
+		$init_woo_api = new Woo_REST_API();
+		
+	}
+
+	if ( tfs_processing_script_query_string() == true ) {
+
+		Woo_REST_API::tfs_restart_product_data_feed();
+
+	}
 
 }
 run_woo_amz_integration();
