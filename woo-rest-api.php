@@ -4,8 +4,10 @@
  * The class responsible for communicating with WooCommerce REST API
  * 
  * @since 0.1.0
- * @version 0.3.0
+ * @version 0.4.0
  */
+
+defined( 'ABSPATH' ) or die( 'You do not have sufficient permissions to access this page.' );
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -13,12 +15,26 @@ use Automattic\WooCommerce\Client;
 
 class Woo_REST_API {
 
+    /**
+     * Product data for use with class Woo_Amz_File_Handler
+     * 
+     * @since 0.4.0
+     */
+    public static $tfs_product_data = NULL;
+
+
     function __construct() {
 
-        self::tfs_get_product_data();
+       self::tfs_filter_product_data( self::tfs_get_product_data() );
 
     }
 
+    /**
+     * Get instance of class Client
+     * 
+     * @since 0.2.0
+     * @return new Client - HTTP Client to communicate with WooCommerce REST API
+     */
     private static function tfs_start_http_client() {
 
         return new Client(
@@ -35,6 +51,12 @@ class Woo_REST_API {
 
     }
 
+    /**
+     * Retrieve the total product count via the WooCommerce REST API
+     * 
+     * @since 0.2.0
+     * @return int - the total number of products
+     */
     private static function tfs_get_product_count() {
 
         $decoded = [];
@@ -59,6 +81,11 @@ class Woo_REST_API {
 
     }
 
+    /**
+     * Retrieve all product variations
+     * 
+     * @since 0.2.0
+     */
     private static function tfs_get_all_product_variations() {
 
         //use woocommerce rest api for this
@@ -69,6 +96,18 @@ class Woo_REST_API {
 
     }
 
+
+    /**
+     * Inserts a row into the plugin custom table
+     * 
+     * @since 0.3.0
+     * 
+     * @param int $id - the export id
+     * @param int $products_to_process - the total of amount of products that need to be processed
+     * @param int $current_page - the current page in WooCommerce REST API pagination
+     * @param int $products_processed - the current number of products processed
+     * @param bool $completed - whether or not the current export is completed
+     */
     private static function tfs_insert_row( $id, $products_to_process, $current_page, $products_processed, $completed = 0 ) {
 
         global $wpdb;
@@ -85,9 +124,19 @@ class Woo_REST_API {
 
         )  );
 
-
     }
 
+
+    /**
+     * Update a row in the custom plugin table
+     * 
+     * @since 0.3.0
+     * 
+     * @param int $id - the export id
+     * @param int $current_page - the current page in WooCommerce REST API pagination
+     * @param int $products_processed - the current number of products processed
+     * @param bool $completed - whether or not the current export is completed
+     */
     private static function tfs_update_row( $id, $current_page, $products_processed, $completed = 0 ) {
 
        global $wpdb;
@@ -106,6 +155,14 @@ class Woo_REST_API {
 
     }
 
+    /**
+     * Checks the status of the current inventory export
+     * 
+     * @since 0.3.0
+     * 
+     * @param int $id - the ID of the current inventory export
+     * @return stdClass $col - object containing info about current inventory export
+     */
     private static function tfs_check_product_feed_download_status( $id ) {
 
         global $wpdb;
@@ -123,8 +180,6 @@ class Woo_REST_API {
 
         );
 
-        //print_r($current_status);
-
         foreach( $current_status as $col ) {
 
             return $col;
@@ -133,13 +188,18 @@ class Woo_REST_API {
 
     }
 
+    /**
+     * If the current inventory export is not yet completed, restart it
+     * 
+     * @since 0.3.0
+     */
     public static function tfs_restart_product_data_feed() {
 
-        $status = self::tfs_check_product_feed_download_status( 47 );
+        $status = self::tfs_check_product_feed_download_status( 50 );
 
         if ( $status->completed !== 1 ) {
 
-            self::tfs_get_product_data();
+            self::tfs_filter_product_data( self::tfs_get_product_data() );
 
             printf('continuing');
 
@@ -147,6 +207,14 @@ class Woo_REST_API {
 
     }
 
+    /**
+     * Checks whether or not a row with the supplied id exists in the plugin custom table
+     * 
+     * @since 0.3.0
+     * 
+     * @param int $id - the export/row id
+     * @return bool
+     */
     public static function tfs_check_if_row_exists( $id ) {
 
         global $wpdb;
@@ -176,12 +244,18 @@ class Woo_REST_API {
     }
 
 
-
+    /**
+     * Retrieves product data from the WooCommerce REST API
+     * 
+     * @since 0.2.0
+     * 
+     * @return array $all_products - an array of products from the current WooCommerce REST API call
+     */
     public static function tfs_get_product_data() {
 
         $total_products = self::tfs_get_product_count();
 
-        $id = 47;
+        $id = 50;
 
         //insert current feed id to get info about it
         $status_obj = self::tfs_check_product_feed_download_status( $id );
@@ -219,11 +293,15 @@ class Woo_REST_API {
         do {
 
             //when finished, mark as completed
-            if ( $products_processed + count( $all_products ) > $status_obj->products_to_process ) {
+            if ( $status_obj !== NULL ) {
 
-                self::tfs_update_row( $id, $current_page_count, $products_processed + count( $all_products ), 1 );
+                if ( $products_processed + count( $all_products ) > $status_obj->products_to_process ) {
 
-                break;
+                    self::tfs_update_row( $id, $current_page_count, $products_processed + count( $all_products ), 1 );
+    
+                    break;
+    
+                }
 
             }
 
@@ -245,9 +323,19 @@ class Woo_REST_API {
     
         } while ( $page < 5 );
 
+
+        return $all_products;
+
     }
 
-    private function tfs_filter_product_data( $product_data_stdclass ) {
+    /**
+     * Creates an array containing only the necessary product data for Amazon MWS inventory file
+     * 
+     * @since 0.2.0
+     * 
+     * @param stdClass - object containing product data
+     */
+    private static function tfs_filter_product_data( $product_data_stdclass ) {
 
         $decoded = [];
         $complete_product_data = [];
@@ -262,20 +350,39 @@ class Woo_REST_API {
 
         foreach( $decoded as $product ) {
 
+            $price = null;
+
+            if ( ! empty( $product['sale_price'] ) && $product['sale_price'] > 0 ) {
+
+                $price = $product['sale_price'];
+
+            } else {
+
+                $price = $product['regular_price'];
+
+            }
+
             array_push( $complete_product_data, 
             
-                array( $product['sku'] => 
-                
-                    array( 'stock' => $product['stock_quantity'], 'regular_price' => $product['regular_price'], 'sale_price' => $product['sale_price'] ) 
+                array( 
+
+                    'sku'                 => $product['sku'], 
+                    'price'               => $price, 
+                    'minimum-price'       => $price, 
+                    'maximum-price'       => '', 
+                    'quantity'            => $product['stock_quantity'], 
+                    'handling-time'       => '', 
+                    'fullfilment-channel' => ''
 
                 )
+
             );
 
         }
 
-        //print_r($complete_product_data);
+        self::$tfs_product_data = $complete_product_data;
 
     }
 
 
-}
+} //end class Woo_REST_API
