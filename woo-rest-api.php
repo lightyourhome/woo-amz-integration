@@ -4,7 +4,7 @@
  * The class responsible for communicating with WooCommerce REST API
  * 
  * @since 0.1.0
- * @version 0.4.0
+ * @version 0.5.0
  */
 
 defined( 'ABSPATH' ) or die( 'You do not have sufficient permissions to access this page.' );
@@ -21,6 +21,8 @@ class Woo_REST_API {
      * @since 0.4.0
      */
     public static $tfs_product_data = NULL;
+
+    public static $feed_running = FALSE;
 
 
     function __construct() {
@@ -163,7 +165,7 @@ class Woo_REST_API {
      * @param int $id - the ID of the current inventory export
      * @return stdClass $col - object containing info about current inventory export
      */
-    private static function tfs_check_product_feed_download_status( $id ) {
+    public static function tfs_check_product_feed_download_status( $id ) {
 
         global $wpdb;
 
@@ -195,7 +197,7 @@ class Woo_REST_API {
      */
     public static function tfs_restart_product_data_feed() {
 
-        $status = self::tfs_check_product_feed_download_status( 50 );
+        $status = self::tfs_check_product_feed_download_status( 62 );
 
         if ( $status->completed !== 1 ) {
 
@@ -253,12 +255,11 @@ class Woo_REST_API {
      */
     public static function tfs_get_product_data() {
 
+        self::$feed_running = TRUE;
+
         $total_products = self::tfs_get_product_count();
 
-        $id = 50;
-
-        //insert current feed id to get info about it
-        $status_obj = self::tfs_check_product_feed_download_status( $id );
+        $id = 62;
 
         $all_products = [];
 
@@ -267,6 +268,10 @@ class Woo_REST_API {
             self::tfs_insert_row( $id, $total_products, 1, sizeOf( $all_products) );
 
         }
+
+        //insert current feed id to get info about it
+        $status_obj = self::tfs_check_product_feed_download_status( $id );
+
 
         $page = 0;
 
@@ -323,6 +328,8 @@ class Woo_REST_API {
     
         } while ( $page < 5 );
 
+
+        self::$feed_running = FALSE;
 
         return $all_products;
 
