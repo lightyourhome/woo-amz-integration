@@ -4,15 +4,33 @@ All notable theme changes should be added to this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [ 0.4.0 ] - 7.6.2020
+## [ 0.5.0 ] - 7.7.2020 - Most recent stable version
+
+## Added
+
+- Stop feed creation button, download file button and send file button to settings menu 
+- Admin notice for whether or not an inventory file exists
+- Progress messages to admin menu to notify when the feed is running, etc.
+- WP REST API Json response to deliver information about feed while running
+- Basic CSS
+
+## Changed
+
+- Admin settings menu
+- Asynchronous product tracker to be more accurate
+
+## Removed
+
+- JS Ajax progress checker function
+
+## [ 0.4.0 ] - 7.7.2020
 
 ## Added
 
 - class Woo_Amz_File_Handler to create product inventory files
 - documentation for woo-rest-api.php and class-woo-amz-file-handler.php
 
-
-## [ 0.3.0 ] - 7.6.2020 - Most recent stable version
+## [ 0.3.0 ] - 7.6.2020
 
 ## Added
 

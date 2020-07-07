@@ -2,3 +2,11 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+
+#feed-status-text {
+    margin-right: 15px;
+}
+
+#ajax-loader {
+    float: left;
+}
