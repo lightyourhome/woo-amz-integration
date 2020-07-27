@@ -4,6 +4,19 @@ All notable theme changes should be added to this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [ 0.5.0 ] - 7.9.2020
+
+## Added
+
+- Delete file feature if a file exists and user wants to create a new one
+- Admin nonces
+- Download button support (now works
+- Inventory feed row reset
+
+## Removed
+
+- Dynamic SQL row creation (only one row will be needed)
+
 ## [ 0.5.0 ] - 7.7.2020 - Most recent stable version
 
 ## Added

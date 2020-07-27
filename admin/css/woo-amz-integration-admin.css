@@ -10,3 +10,8 @@
 #ajax-loader {
     float: left;
 }
+
+#feed-warning,
+#feed-status {
+    display: none;
+}
