@@ -6,53 +6,56 @@
 
 		$(document).ready(function() {
 
-			$('#feed-progress').hide();
-			$('#feed-status').hide();
-			$('#feed-warning').hide();
+			if ( $('#woo-amz-admin-settings-form').length ) {
 
-			if ( $('#tfs_start_amz_data_feed') ) {
-
-				let feedEnabled = document.getElementById('feed_enabled').checked;
+				$('#feed-progress').hide();
+				$('#feed-status').hide();
+				$('#feed-warning').hide();
+				$('#download_inventory').show();
 	
-				$( '#feed_submit' ).click(function() {
+				if ( $('#tfs_start_amz_data_feed') ) {
 	
-					if ( feedEnabled ) {
-	
-						tfsWooAmzAjax( feedEnabled );
-
-						$('#send_inventory').hide();
-
-						$('#feed-progress').show();
-
-						$('#feed-progress').html('<p>Current Progress: <strong>Loading...</strong></p>');
-
-						$('#feed-status').show();
-						$('#feed-status-text').html('<p>Current Status: <strong>Starting</strong></p>');
-
-						$('#feed-warning').show();
-
-	
-					} else {
-
-						alert('Enable Feed and Save before running!');
-
-					}
+					let feedEnabled = document.getElementById('feed_enabled').checked;
 		
-				});
-
-			    $('#feed_stop').click(function() {
-
-					tfsWooAmzAjax( false, false );
-
-				});
+					$( '#feed_submit' ).click(function() {
+		
+						if ( feedEnabled ) {
+			
+							tfsWooAmzAjax( feedEnabled );
 	
+							$('#send_inventory').hide();
+	
+							$('#feed-progress').show();
+	
+							$('#feed-progress').html('<p>Current Progress: <strong>Loading...</strong></p>');
+	
+							$('#feed-status').show();
+							$('#feed-status-text').html('<p>Current Status: <strong>Starting</strong></p>');
+	
+							$('#download_inventory').hide();
+	
+							$('#feed-warning').show();
+	
+			
+						} else {
+		
+							alert('Enable Feed and Save before running!');
+		
+						}
+			
+					});
+	
+				}
+
 			}
 
 		});
 
 	}
 
+
 	tfsInitAdminPage();
+
 
 	function tfsWooAmzAjax( value, timer = null ) {
 
@@ -60,12 +63,7 @@
 
 		(function worker() {
 
-			if ( timer == false ) {
-
-				clearTimeout(timer);
-
-			}
-
+			$('#download_inventory').hide();
 			$('#feed_submit').hide();
 
 			$.ajax({
@@ -75,6 +73,11 @@
 				data: {
 				  enabled: value
 				},
+				beforeSend: function ( xhr ) {
+
+					xhr.setRequestHeader( 'X-WP-Nonce', tfs_woo_amz_int_object.api_nonce );
+
+				},	  
 				success: function( response ) {
 
 					//$('#feed-progress').html('<p>Current Progress: Loading...</p>');
@@ -92,36 +95,34 @@
 					try {
 
 						if ( parsed_data.completed == 0 ) {
-
-							$('#feed_stop').show();
 		
 							$('#feed-progress').html('<p>Current Progress: '+ parsed_data.products_processed + ' / ' + parsed_data.products_to_process + '</p>');
 		
 							$('#feed-status-text').html('<p>Current Status: <strong>Running...</strong></p>');
-		
+							
 							timer = setTimeout(worker, 5000);
 		
 						} else if ( parsed_data.completed == 1 ) {
-		
-							$('#feed_stop').hide();
-		
-							$('#feed-progress').html('<p>Current Progress: '+ parsed_data.products_processed + ' / ' + parsed_data.products_to_process + '</p>');
+				
+							$('#feed-progress').hide();
 		
 							$('#feed-status-text').html('<p>Current Status: <strong>Completed!</strong></p>');
 		
 							$('#ajax-loader').hide();
 
 							$('#send_inventory').show();
+
+							$('#feed-warning').hide();
 		
 							clearTimeout(timer);
 
 							$('#feed_submit').show();
+
+							$('#download_inventory').show();
 								
 						}
 
 					} catch {
-
-						$('#feed_stop').show();
 			
 						$('#feed-status-text').html('<p>Current Status: <strong>Running...</strong></p>');
 	

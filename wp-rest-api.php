@@ -46,7 +46,7 @@ class Tfs_WP_REST_API {
 
                 $params = $request->get_params();
                
-                $feed_status = Woo_REST_API::tfs_check_product_feed_download_status( 62 );
+                $feed_status = Woo_REST_API::tfs_check_product_feed_download_status();
 
                 $completed = 0;
 
@@ -58,7 +58,7 @@ class Tfs_WP_REST_API {
 
                 if ( isset( $params['enabled'] ) && $params['enabled'] == true ) {
 
-                    if ( Woo_REST_API::$feed_running !== TRUE && $completed !== 1 ) {
+                    if ( Woo_REST_API::$feed_running !== TRUE ) {
 
                         $init_woo_rest_api = new Woo_REST_API();
 

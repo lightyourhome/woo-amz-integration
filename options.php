@@ -35,21 +35,6 @@ class Woo_Amz_Integration_Settings_Page {
 
 	}
 	
-	private function tfs_check_if_inv_file_exists() {
-
-        $file = 'c:\\xampp\\htdocs\\lightyourhome.com_april\\wp-content\\uploads\\amz_inventory.txt';
-
-		if ( file_exists( $file ) ) { 
-
-			return true;
-			
-		} else {
-
-			return false;
-
-		}
-
-	}
 
 	/**
 	 * Get the current options for use with the plugin add on classes
@@ -88,7 +73,7 @@ class Woo_Amz_Integration_Settings_Page {
 	
 		<h1>WooCommerce Amazon Integration Settings</h1>
 
-			<?php if ( self::tfs_check_if_inv_file_exists() ) : ?>
+			<?php if ( Woo_Amz_File_Handler::tfs_check_if_inv_file_exists() ) : ?>
 
 				<div class="notice is-dismissable notice-info">
 					<p><?php _e( 'An Inventory File Currently Exists. You can create a new one below.', 'lightyourhome.com' ); ?></p>
@@ -104,16 +89,15 @@ class Woo_Amz_Integration_Settings_Page {
 
             <div id="feed-progress"></div>
 			<div id="feed-status"><img id="ajax-loader" src="<?php echo site_url('/wp-content/plugins/woo-amz-integration/assets/images/ajax-loader.gif'); ?>"><div id="feed-status-text"></div></div>
-			<div id="feed-warning"><strong>The feed is currently running. Please do not close this page.</strong></div>
+			<div id="feed-warning"><strong>The feed is currently running. Please do not close or refresh this page.</strong></div>
 			<br />
-			<form action="options.php" method="post">
+			<form id="woo-amz-admin-settings-form" action="options.php" method="post">
 				<?php 
 				 settings_fields( 'woo-amz-integration' );
 				 do_settings_sections( 'woo-amz-integration' ); ?>
 				<input name="submit" class="button button-primary" type="submit" value="<?php esc_attr_e( 'Save Settings' ); ?>" />
-                <input id="feed_submit" name="submit" class="button button-primary" type="button" value="<?php if ( self::tfs_check_if_inv_file_exists() ) : esc_attr_e( 'Create New Feed' ); else : esc_attr_e( 'Create Feed' ); endif; ?>" />
-				<input id="feed_stop" name="submit" class="button button-primary" type="button" value="<?php esc_attr_e( 'Stop Feed' ); ?>" style="display: none;" />
-				<input id="download_inventory" name="submit" class="button button-primary" type="button" value="<?php esc_attr_e( 'Download Inventory File' ); ?>" style="display: none;" />
+                <input id="feed_submit" name="submit" class="button button-primary" type="button" value="<?php if ( Woo_Amz_File_Handler::tfs_check_if_inv_file_exists() ) : esc_attr_e( 'Create New Feed' ); else : esc_attr_e( 'Create Feed' ); endif; ?>" />
+				<a href="<?php echo site_url('/wp-content/uploads/amz_inventory.txt'); ?>" class="button button-primary" download>Download Inventory File</a>
 				<input id="send_inventory" name="submit" class="button button-primary" type="button" value="<?php esc_attr_e( 'Send Inventory to Amazon' ); ?>" style="display: none;" />
 		</form>
 	

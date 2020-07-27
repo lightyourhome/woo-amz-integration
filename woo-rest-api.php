@@ -27,8 +27,7 @@ class Woo_REST_API {
 
     function __construct() {
 
-       self::tfs_filter_product_data( self::tfs_get_product_data() );
-
+        self::tfs_filter_product_data( self::tfs_get_product_data() );
     }
 
     /**
@@ -46,7 +45,8 @@ class Woo_REST_API {
             'cs_2afa79f0cab8defd36f492a32302de10c8bb936f',
             [
                 'wp_api' => true,
-                'version' => 'wc/v3'
+                'version' => 'wc/v3',
+                'query_string_auth' => true
             ]
     
         );
@@ -128,6 +128,47 @@ class Woo_REST_API {
 
     }
 
+    private static function tfs_delete_row() {
+
+        global $wpdb;
+
+        $wpdb->delete( 
+            $wpdb->prefix . 'tfs_amz_int_data',
+            array(
+
+                'id' => 0,
+                
+        )  );
+
+    }
+
+    /**
+     * Reset the plugin inventory progress row
+     * 
+     * @since 0.5.0
+     * 
+     */
+    private static function tfs_reset_row_data() {
+
+        global $wpdb;
+
+        $wpdb->update(
+            $wpdb->prefix . 'tfs_amz_int_data',
+            array(
+
+                'current_page' => 1,
+                'products_to_process' => 0,
+                'products_processed' => 0,
+                'completed' => 0
+
+            ),
+            array( 'id' => 0 )
+
+        );
+
+
+    }
+
 
     /**
      * Update a row in the custom plugin table
@@ -139,7 +180,7 @@ class Woo_REST_API {
      * @param int $products_processed - the current number of products processed
      * @param bool $completed - whether or not the current export is completed
      */
-    private static function tfs_update_row( $id, $current_page, $products_processed, $completed = 0 ) {
+    private static function tfs_update_row( $id, $current_page, $total_products, $products_processed, $completed = 0 ) {
 
        global $wpdb;
 
@@ -147,9 +188,10 @@ class Woo_REST_API {
            $wpdb->prefix . 'tfs_amz_int_data',
            array(
                 
-                'current_page'       => $current_page,
-                'products_processed' => $products_processed,
-                'completed'          => $completed
+                'current_page'        => $current_page,
+                'products_to_process' => $total_products,
+                'products_processed'  => $products_processed,
+                'completed'           => $completed
                 
            ),
            array( 'id' => $id )
@@ -162,10 +204,9 @@ class Woo_REST_API {
      * 
      * @since 0.3.0
      * 
-     * @param int $id - the ID of the current inventory export
      * @return stdClass $col - object containing info about current inventory export
      */
-    public static function tfs_check_product_feed_download_status( $id ) {
+    public static function tfs_check_product_feed_download_status() {
 
         global $wpdb;
 
@@ -176,7 +217,7 @@ class Woo_REST_API {
             "
             SELECT id, products_to_process, current_page, products_processed, completed
             FROM $tbl_name
-            WHERE id = $id
+            WHERE id = 0
 
             "
 
@@ -197,7 +238,7 @@ class Woo_REST_API {
      */
     public static function tfs_restart_product_data_feed() {
 
-        $status = self::tfs_check_product_feed_download_status( 62 );
+        $status = self::tfs_check_product_feed_download_status();
 
         if ( $status->completed !== 1 ) {
 
@@ -217,7 +258,7 @@ class Woo_REST_API {
      * @param int $id - the export/row id
      * @return bool
      */
-    public static function tfs_check_if_row_exists( $id ) {
+    public static function tfs_check_if_row_exists() {
 
         global $wpdb;
 
@@ -228,7 +269,7 @@ class Woo_REST_API {
             "
             SELECT id
             FROM $tbl_name
-            WHERE id = $id
+            WHERE id = 0
             "
 
         );
@@ -259,19 +300,9 @@ class Woo_REST_API {
 
         $total_products = self::tfs_get_product_count();
 
-        $id = 62;
-
         $all_products = [];
 
-        if ( empty( self::tfs_check_if_row_exists( $id ) ) || self::tfs_check_if_row_exists( $id ) !== TRUE  ) {
-
-            self::tfs_insert_row( $id, $total_products, 1, sizeOf( $all_products) );
-
-        }
-
-        //insert current feed id to get info about it
-        $status_obj = self::tfs_check_product_feed_download_status( $id );
-
+        $status_obj = self::tfs_check_product_feed_download_status();
 
         $page = 0;
 
@@ -290,6 +321,13 @@ class Woo_REST_API {
             $current_page_count = $status_obj->current_page;
 
         }
+
+        if ( $status_obj !== NULL && $status_obj->completed !== FALSE ) {
+
+            //populate the row
+            self::tfs_update_row( 0, $current_page_count, $total_products, $products_processed );
+    
+        }    
     
         $products = [];
     
@@ -302,8 +340,8 @@ class Woo_REST_API {
 
                 if ( $products_processed + count( $all_products ) > $status_obj->products_to_process ) {
 
-                    self::tfs_update_row( $id, $current_page_count, $products_processed + count( $all_products ), 1 );
-    
+                    self::tfs_update_row( 0, $current_page_count, $total_products, $products_processed + count( $all_products ), 1 );
+                        
                     break;
     
                 }
@@ -324,14 +362,26 @@ class Woo_REST_API {
             $current_page_count++;
             $page++;
         
-            self::tfs_update_row( $id, $current_page_count, $products_processed + sizeOf( $all_products ) );
+            self::tfs_update_row( 0, $current_page_count, $total_products, $products_processed + sizeOf( $all_products ) );
     
         } while ( $page < 5 );
 
 
         self::$feed_running = FALSE;
 
-        return $all_products;
+        if ( $status_obj !== NULL && $status_obj->completed == 1 ) {
+
+            self::tfs_delete_row();
+
+            self::tfs_insert_row( 0, 0, 0, 0 );
+            
+            return FALSE;
+
+        } else {
+
+            return $all_products;
+
+        }
 
     }
 
@@ -344,52 +394,61 @@ class Woo_REST_API {
      */
     private static function tfs_filter_product_data( $product_data_stdclass ) {
 
-        $decoded = [];
-        $complete_product_data = [];
+        if ( $product_data_stdclass == FALSE ) {
 
-        foreach ( $product_data_stdclass as $obj ) {
+            self::$tfs_product_data == FALSE;
 
-            $decoded_product_data = json_decode( json_encode( $obj ), true );
+        } else {
 
-            array_push( $decoded, $decoded_product_data );
-
-        }
-
-        foreach( $decoded as $product ) {
-
-            $price = null;
-
-            if ( ! empty( $product['sale_price'] ) && $product['sale_price'] > 0 ) {
-
-                $price = $product['sale_price'];
-
-            } else {
-
-                $price = $product['regular_price'];
-
+            $decoded = [];
+            $complete_product_data = [];
+    
+            foreach ( $product_data_stdclass as $obj ) {
+    
+                $decoded_product_data = json_decode( json_encode( $obj ), true );
+    
+                array_push( $decoded, $decoded_product_data );
+    
             }
-
-            array_push( $complete_product_data, 
-            
-                array( 
-
-                    'sku'                 => $product['sku'], 
-                    'price'               => $price, 
-                    'minimum-price'       => $price, 
-                    'maximum-price'       => '', 
-                    'quantity'            => $product['stock_quantity'], 
-                    'handling-time'       => '', 
-                    'fullfilment-channel' => ''
-
-                )
-
-            );
+    
+            foreach( $decoded as $product ) {
+    
+                $price = null;
+    
+                if ( ! empty( $product['sale_price'] ) && $product['sale_price'] > 0 ) {
+    
+                    $price = $product['sale_price'];
+    
+                } else {
+    
+                    $price = $product['regular_price'];
+    
+                }
+    
+                array_push( $complete_product_data, 
+                
+                    array( 
+    
+                        'sku'                 => $product['sku'], 
+                        'price'               => $price, 
+                        'minimum-price'       => $price, 
+                        'maximum-price'       => '', 
+                        'quantity'            => $product['stock_quantity'], 
+                        'handling-time'       => '', 
+                        'fullfilment-channel' => ''
+    
+                    )
+    
+                );
+    
+            }
+    
+            self::$tfs_product_data = $complete_product_data;
 
         }
-
-        self::$tfs_product_data = $complete_product_data;
 
     }
 
 
 } //end class Woo_REST_API
+//$init = new Woo_REST_API();
