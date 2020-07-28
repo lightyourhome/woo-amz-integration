@@ -4,6 +4,23 @@ All notable theme changes should be added to this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [ 0.6.0 ] - 7.28.2020 - Most recent stable version for Amazon MWS
+
+## Added
+
+- Class MWS_FEED to handle construction and responses related to MWS feed submission
+- Amazon MWS Feed submission list
+- Amazon MWS Feed submission results
+- New Model files related to Feed Lists and Feed Results
+- Class DB_MAN to manage database operations within plugin
+
+## [ 0.6.0 ] - 7.27.2020
+
+# Added
+
+- Amazon MWS API Support
+- Amazon MWS Feed submission files
+
 ## [ 0.5.0 ] - 7.9.2020
 
 ## Added
