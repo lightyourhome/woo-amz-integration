@@ -40,7 +40,7 @@ define( 'WOO_AMZ_INTEGRATION_VERSION', '0.7.0' );
 define('WOO_AMZ_PLUGIN_DIR', ABSPATH . 'wp-content/plugins/woo-amz-integration/');
 define('WOO_AMZ_INV_FILE_PATH', ABSPATH . 'wp-content/uploads/amz_inventory.txt');
 define('WOO_AMZ_RESPONSE_LOG', ABSPATH . 'wp-content/uploads/amz_response_log');
-define('WOO_AMZ_ERROR_LOG', ABSPATH . 'wp-content/uploads/amz_error_log.text');
+define('WOO_AMZ_ERROR_LOG', ABSPATH . 'wp-content/uploads/amz_error_log.txt');
 
 /**
  * The code that runs during plugin activation.

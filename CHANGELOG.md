@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reformatted invoke feed methods in Class MWS_FEED
 - Invoke method exception handling 
 
+## Fixed
+
+- HTTP Bug where connection would not close with MWS
+
 ## [ 0.6.0 ] - 7.28.2020 - Most recent stable version for Amazon MWS
 
 ## Added
