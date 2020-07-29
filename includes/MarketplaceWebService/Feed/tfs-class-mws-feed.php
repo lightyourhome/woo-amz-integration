@@ -304,6 +304,10 @@ class TFS_MWS_FEED {
 
                 fwrite( $responseLogHandle, $response->getResponseHeaderMetadata() . "\n");
 
+                fclose( $responseLogHandle );
+
+                exit;
+
             }
                 
         } catch (MarketplaceWebService_Exception $ex) {
@@ -322,6 +326,7 @@ class TFS_MWS_FEED {
 
             fclose( $handle );
 
+            exit;
         }
 
     }
@@ -422,6 +427,10 @@ class TFS_MWS_FEED {
 
             fwrite( $responseLogHandle, "Response Header Metadata: " . $response->getResponseHeaderMetadata() . "\n" );
 
+            fclose( $responseLogHandle );
+
+            exit;
+
         } catch (MarketplaceWebService_Exception $ex) {
 
             $handle = fopen( WOO_AMZ_ERROR_LOG, 'a+');
@@ -437,6 +446,8 @@ class TFS_MWS_FEED {
             fwrite( $handle, "END ERROR\n\n");
 
             fclose( $handle );
+
+            exit;
             
         }
 
@@ -491,6 +502,10 @@ class TFS_MWS_FEED {
 
             fwrite( $responseLogHandle, "ResponseHeaderMetadata: " . $response->getResponseHeaderMetadata() . "\n");
 
+            fclose( $responseLogHandle );
+
+            exit;
+
         } catch (MarketplaceWebService_Exception $ex) {
 
             $handle = fopen( WOO_AMZ_ERROR_LOG, 'a+');
@@ -506,6 +521,8 @@ class TFS_MWS_FEED {
             fwrite( $handle, "END ERROR\n\n");
 
             fclose( $handle );
+
+            exit;
 
         }
 
