@@ -36,6 +36,13 @@ class TFS_MWS_FEED {
      */
     private static $feedSubmissionId = NULL;
 
+    /**
+     * The final feed submission result MD5, used to check integrity of result response
+     * 
+     * @since 0.6.0
+     */
+    private static $feedResultMD5 = NULL;
+
 
     /**
      * Construct New TFS_MWS_FEED
@@ -400,7 +407,8 @@ class TFS_MWS_FEED {
 
             } 
             if  ( $response->isSetResponseMetadata() ) { 
-                echo("---------------------Response Metadata---------------------\n");
+
+                fwrite( $responseLogHandle, "---------------------Response Metadata---------------------\n");
 
                 $responseMetadata = $response->getResponseMetadata();
 
@@ -445,42 +453,62 @@ class TFS_MWS_FEED {
     private static function invokeGetFeedSubmissionResult($service, $request) 
     {
         try {
-                $response = $service->getFeedSubmissionResult($request);
-                
-                    echo ("Service Response\n");
-                    echo ("=============================================================================\n");
-    
-                    echo("        GetFeedSubmissionResultResponse\n");
-                    if ($response->isSetGetFeedSubmissionResultResult()) {
-                    $getFeedSubmissionResultResult = $response->getGetFeedSubmissionResultResult(); 
-                    echo ("            GetFeedSubmissionResult");
-                    
-                    if ($getFeedSubmissionResultResult->isSetContentMd5()) {
-                        echo ("                ContentMd5");
-                        echo ("                " . $getFeedSubmissionResultResult->getContentMd5() . "\n");
-                    }
-                    }
-                    if ($response->isSetResponseMetadata()) { 
-                        echo("            ResponseMetadata\n");
-                        $responseMetadata = $response->getResponseMetadata();
-                        if ($responseMetadata->isSetRequestId()) 
-                        {
-                            echo("                RequestId\n");
-                            echo("                    " . $responseMetadata->getRequestId() . "\n");
-                        }
-                    } 
-    
-                    echo("            ResponseHeaderMetadata: " . $response->getResponseHeaderMetadata() . "\n");
-            } catch (MarketplaceWebService_Exception $ex) {
-            echo("Caught Exception: " . $ex->getMessage() . "\n");
-            echo("Response Status Code: " . $ex->getStatusCode() . "\n");
-            echo("Error Code: " . $ex->getErrorCode() . "\n");
-            echo("Error Type: " . $ex->getErrorType() . "\n");
-            echo("Request ID: " . $ex->getRequestId() . "\n");
-            echo("XML: " . $ex->getXML() . "\n");
-            echo("ResponseHeaderMetadata: " . $ex->getResponseHeaderMetadata() . "\n");
-        }
-    }
 
+            $response = $service->getFeedSubmissionResult($request);
+
+            $responseLogHandle = fopen( WOO_AMZ_RESPONSE_LOG . "-feed-result-list-" . time() . ".txt", 'a+' );
+            
+            fwrite("---------------------------Response Data-----------------------------\n");
+
+            if ( $response->isSetGetFeedSubmissionResultResult() ) {
+
+                $getFeedSubmissionResultResult = $response->getGetFeedSubmissionResultResult(); 
+
+                fwrite( "Feed Submission Result: " . $getFeedSubmissionResultResult . "\n" );
+                
+                if ( $getFeedSubmissionResultResult->isSetContentMd5() ) {
+
+                    self::$feedResultMD5 = $getFeedSubmissionResultResult->getContentMd5();
+
+                    fwrite( $responseLogHandle, "Content MD5: " . self::$feedResultMD5 . "\n");
+
+                }
+
+            }
+
+            if ( $response->isSetResponseMetadata() ) { 
+
+                fwrite("---------------------Response Metadata----------------------\n");
+
+                $responseMetadata = $response->getResponseMetadata();
+                
+                if ( $responseMetadata->isSetRequestId() ) 
+                {
+                    fwrite( $responseLogHandle, "Request ID: " . $responseMetadata->getRequestId() . "\n" );
+
+                }
+            } 
+
+            fwrite( $responseLogHandle, "ResponseHeaderMetadata: " . $response->getResponseHeaderMetadata() . "\n");
+
+        } catch (MarketplaceWebService_Exception $ex) {
+
+            $handle = fopen( WOO_AMZ_ERROR_LOG, 'a+');
+
+            fwrite( $handle, time() . "\n" );
+            fwrite( $handle, 'Caught Exception: ' . $ex->getMessage() . "\n");
+            fwrite( $handle, 'Response Status Code: ' . $ex->getStatusCode() . "\n");
+            fwrite( $handle, 'Error Code: ' . $ex->getErrorCode() . "\n");
+            fwrite( $handle, 'Error Type: ' . $ex->getErrorType() . "\n");
+            fwrite( $handle, 'Request ID: ' . $ex->getRequestId() . "\n");
+            fwrite( $handle, 'XML: ' . $ex->getXML() . "\n");
+            fwrite( $handle, 'ResponseHeaderMetaData: ' . $ex->getResponseHeaderMetadata() . "\n");
+            fwrite( $handle, "END ERROR\n\n");
+
+            fclose( $handle );
+
+        }
+
+    }
   
 } //END class TFS_MWS_FEED

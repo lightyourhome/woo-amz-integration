@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Added
 
 - Error log to Class MWS_FEED
+- Response Logging to Class MWS_FEED
 
 ## Changed
 
