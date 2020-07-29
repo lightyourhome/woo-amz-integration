@@ -20,12 +20,22 @@ class TFS_MWS_FEED {
     */
     private static $serviceUrl = "https://mws.amazonservices.com";
 
+
     /**
      * HTTP Config prop
      * 
      * @since 0.6.0
      */
     private static $httpConfig = NULL;
+
+
+    /**
+     * The submission id that is set after initially submitting a feed
+     * 
+     * @since 0.6.0
+     */
+    private static $feedSubmissionId = NULL;
+
 
     /**
      * Construct New TFS_MWS_FEED
@@ -134,16 +144,16 @@ class TFS_MWS_FEED {
     * 
     * @return object - the GetFeedSubmissionList object
     */
-    private static function feedSubmissionListData( $feedSubmissionId = '50097018471' ) {
+    private static function feedSubmissionListData() {
 
         try {
 
-            if ( ! empty( $feedSubmissionId ) ) {
+            if ( ! empty( self::$feedSubmissionId ) ) {
 
                 $parameters = array (
 
                     'Merchant'                 => MERCHANT_ID,
-                    'FeedSubmissionIdList'     => array('Id' => $feedSubmissionId), // TODO: Add feed submission ID from SubmitFeed response
+                    'FeedSubmissionIdList'     => array('Id' => self::$feedSubmissionId), // TODO: Add feed submission ID from SubmitFeed response
                     'FeedProcessingStatusList' => array ('Status' => array ('_SUBMITTED_', '_DONE_') ),
                     'MWSAuthToken'             => MERCHANT_ID, // Optional
         
@@ -171,16 +181,16 @@ class TFS_MWS_FEED {
     * 
     * @return object - the GetFeedSubmissionResultRequest object
     */
-    private static function submitFeedResultData( $feedSubmissionId = '50097018471' ) {
+    private static function submitFeedResultData() {
 
         try {
 
-            if ( ! empty( $feedSubmissionId ) ) {
+            if ( ! empty( self::$feedSubmissionId ) ) {
 
                 $parameters = array (
 
                     'Merchant'             => MERCHANT_ID,
-                    'FeedSubmissionId'     => 50097018471, // TODO: Add Feed Submission ID from SubmitFeed Response
+                    'FeedSubmissionId'     => self::$feedSubmissionId, // TODO: Add Feed Submission ID from SubmitFeed Response
                     'FeedSubmissionResult' => fopen( WOO_AMZ_RESPONSE_LOG, 'rw+' ), //TODO add file creation for responses
                     'MWSAuthToken'         => MERCHANT_ID, // Optional
         
@@ -220,60 +230,52 @@ class TFS_MWS_FEED {
 
             if ( $response->isSetSubmitFeedResult() ) {
 
-                $finalSubmitFeedResult = array(
-
-                    'FeedSubmissionId'        => '',
-                    'FeedType'                => '',
-                    'SubmittedDate'           => '',
-                    'FeedProcessingStatus'    => '',
-                    'StartedProcessingDate'   => '',
-                    'CompletedProcessingDate' => '',
-                    'HeaderResponseMetaData'  => '',
-                    'RequestId'               => ''
-
-                );
-
                 $submitFeedResult = $response->getSubmitFeedResult();
 
+                $responseLogHandle = fopen( WOO_AMZ_RESPONSE_LOG . "-submit-feed-" . time() . ".txt", 'a+' );
+
                 if ( $submitFeedResult->isSetFeedSubmissionInfo() ) {
+
+                    fwrite( $responseLogHandle, "------------------Feed Submission Info------------------------\n" );
 
                     //Get the feed submission info object
                     $feedSubmissionInfo = $submitFeedResult->getFeedSubmissionInfo();
 
                     if ( $feedSubmissionInfo->isSetFeedSubmissionId() ) {
 
-                        $finalSubmitFeedResult['FeedSubmissionId'] = $feedSubmissionInfo->getFeedSubmissionId();
+                        self::$feedSubmissionId = $feedSubmissionInfo->getFeedSubmissionId();
+
+                        fwrite( $responseLogHandle, "\nFeed Submission ID: " . self::$feedSubmissionId . "\n" );
 
                     }
 
                     if ( $feedSubmissionInfo->isSetFeedType() ) {
 
-                        $finalSubmitFeedResult['FeedType'] = $feedSubmissionInfo->getFeedType();
+                        fwrite( $responseLogHandle, 'Feed Type: ' . $feedSubmissionInfo->getFeedType() . "\n" );
 
                     }
 
                     if ( $feedSubmissionInfo->isSetSubmittedDate() ) {
 
-
-                        $finalSubmitFeedResult['SubmittedDate'] = $feedSubmissionInfo->getSubmittedDate()->format(DATE_FORMAT);
+                        fwrite( $responseLogHandle, 'Submitted Date: ' . $feedSubmissionInfo->getSubmittedDate()->format(DATE_FORMAT) . "\n" );
 
                     }
 
                     if ( $feedSubmissionInfo->isSetFeedProcessingStatus() ) {
 
-                        $finalSubmitFeedResult['FeedProcessingStatus'] = $feedSubmissionInfo->getFeedProcessingStatus();
+                        fwrite( $responseLogHandle, 'Feed Processing Status: ' . $feedSubmissionInfo->getFeedProcessingStatus() . "\n" );
 
                     }
 
                     if ( $feedSubmissionInfo->isSetStartedProcessingDate() ) {
 
-                        $finalSubmitFeedResult['StartedProcessingDate'] = $feedSubmissionInfo->getStartedProcessingDate()->format(DATA_FORMAT);
+                        fwrite( $responseLogHandle, 'Feed Processing Start Date: ' . $feedSubmissionInfo->getStartedProcessingDate()->format(DATA_FORMAT) . "\n" );
 
                     }
 
                     if ( $feedSubmissionInfo->isSetCompletedProcessingDate() ) {
 
-                        $finalSubmitFeedResult['CompletedProcessingDate'] = $feedSubmissionInfo->getCompletedProcessingDate()->format(DATA_FORMAT);
+                        fwrite( $responseLogHandle, 'Feed Processing Completed Date: ' . $feedSubmissionInfo->getCompletedProcessingDate()->format(DATA_FORMAT) . "\n" );
 
                     }
 
@@ -281,17 +283,19 @@ class TFS_MWS_FEED {
 
                 if ( $response->isSetResponseMetadata() ) {
 
+                    fwrite( $responseLogHandle, "---------------------Response Metadata---------------------\n" );
+
                     $responseMetadata = $response->getResponseMetadata();
 
                     if ( $responseMetadata->isSetRequestId() ) {
 
-                        $finalSubmitFeedResult['RequestId'] = $responseMetadata->getRequestId();
+                        fwrite( $responseLogHandle, $responseMetadata->getRequestId() . "\n" );
 
                     }
 
                 }
 
-                $finalSubmitFeedResult['CompletedProcessingDate'] = $response->getResponseHeaderMetadata();
+                fwrite( $responseLogHandle, $response->getResponseHeaderMetadata() . "\n");
 
             }
                 
@@ -328,78 +332,104 @@ class TFS_MWS_FEED {
         try 
         {
             $response = $service->getFeedSubmissionList($request);
-            
-            echo ("Service Response\n");
-            echo ("=============================================================================\n");
 
-            echo("        GetFeedSubmissionListResponse\n");
-            if ($response->isSetGetFeedSubmissionListResult()) { 
-                echo("            GetFeedSubmissionListResult\n");
+            $responseLogHandle = fopen( WOO_AMZ_RESPONSE_LOG . "-feed-sub-list-" . time() . ".txt", 'a+' );
+
+
+
+            if ( $response->isSetGetFeedSubmissionListResult() ) { 
+                
                 $getFeedSubmissionListResult = $response->getGetFeedSubmissionListResult();
-                if ($getFeedSubmissionListResult->isSetNextToken()) 
+
+                if ( $getFeedSubmissionListResult->isSetNextToken() ) 
                 {
-                    echo("                NextToken\n");
-                    echo("                    " . $getFeedSubmissionListResult->getNextToken() . "\n");
+
+                    fwrite($responseLogHandle, "\nNext Token: " . $getFeedSubmissionListResult->getNextToken() . "\n");
+
                 }
-                if ($getFeedSubmissionListResult->isSetHasNext()) 
+                if ( $getFeedSubmissionListResult->isSetHasNext() ) 
                 {
-                    echo("                HasNext\n");
-                    echo("                    " . $getFeedSubmissionListResult->getHasNext() . "\n");
+
+                    fwrite( $responseLogHandle, "Has Next: " . $getFeedSubmissionListResult->getHasNext() . "\n" );
+
                 }
+
                 $feedSubmissionInfoList = $getFeedSubmissionListResult->getFeedSubmissionInfoList();
-                foreach ($feedSubmissionInfoList as $feedSubmissionInfo) {
-                    echo("                FeedSubmissionInfo\n");
-                    if ($feedSubmissionInfo->isSetFeedSubmissionId()) 
+
+                foreach ( $feedSubmissionInfoList as $feedSubmissionInfo ) {
+
+                    fwrite( $responseLogHandle, "-----------------------FeedSubmissionInfo---------------------\n");
+                    if ( $feedSubmissionInfo->isSetFeedSubmissionId() ) 
                     {
-                        echo("                    FeedSubmissionId\n");
-                        echo("                        " . $feedSubmissionInfo->getFeedSubmissionId() . "\n");
+
+                        fwrite( $responseLogHandle, "Feed Submission Id: " . $feedSubmissionInfo->getFeedSubmissionId() . "\n");
+
                     }
-                    if ($feedSubmissionInfo->isSetFeedType()) 
+                    if ( $feedSubmissionInfo->isSetFeedType() ) 
                     {
-                        echo("                    FeedType\n");
-                        echo("                        " . $feedSubmissionInfo->getFeedType() . "\n");
+
+                        fwrite( $responseLogHandle, "Feed Type: " . $feedSubmissionInfo->getFeedType() . "\n" );
+
                     }
-                    if ($feedSubmissionInfo->isSetSubmittedDate()) 
+                    if ( $feedSubmissionInfo->isSetSubmittedDate() ) 
                     {
-                        echo("                    SubmittedDate\n");
-                        echo("                        " . $feedSubmissionInfo->getSubmittedDate()->format(DATE_FORMAT) . "\n");
+
+                        fwrite( $responseLogHandle, "Submitted Date: " . $feedSubmissionInfo->getSubmittedDate()->format(DATE_FORMAT) . "\n" );
+
                     }
-                    if ($feedSubmissionInfo->isSetFeedProcessingStatus()) 
+                    if ( $feedSubmissionInfo->isSetFeedProcessingStatus() ) 
                     {
-                        echo("                    FeedProcessingStatus\n");
-                        echo("                        " . $feedSubmissionInfo->getFeedProcessingStatus() . "\n");
+
+                        fwrite( $responseLogHandle, "Feed Processing Status: " . $feedSubmissionInfo->getFeedProcessingStatus() . "\n" );
+
                     }
-                    if ($feedSubmissionInfo->isSetStartedProcessingDate()) 
+                    if ( $feedSubmissionInfo->isSetStartedProcessingDate() ) 
                     {
-                        echo("                    StartedProcessingDate\n");
-                        echo("                        " . $feedSubmissionInfo->getStartedProcessingDate()->format(DATE_FORMAT) . "\n");
+
+                        fwrite( $responseLogHandle, "FeedProcessingDate: " . $feedSubmissionInfo->getStartedProcessingDate()->format(DATE_FORMAT) . "\n");
+
                     }
-                    if ($feedSubmissionInfo->isSetCompletedProcessingDate()) 
+                    if ( $feedSubmissionInfo->isSetCompletedProcessingDate() ) 
                     {
-                        echo("                    CompletedProcessingDate\n");
-                        echo("                        " . $feedSubmissionInfo->getCompletedProcessingDate()->format(DATE_FORMAT) . "\n");
+
+                        fwrite( $responseLogHandle, "Completed Processing Date: " . $feedSubmissionInfo->getCompletedProcessingDate()->format(DATE_FORMAT) . "\n"); 
+
                     }
+
                 }
+
             } 
-            if ($response->isSetResponseMetadata()) { 
-                echo("            ResponseMetadata\n");
+            if  ( $response->isSetResponseMetadata() ) { 
+                echo("---------------------Response Metadata---------------------\n");
+
                 $responseMetadata = $response->getResponseMetadata();
-                if ($responseMetadata->isSetRequestId()) 
+
+                if ( $responseMetadata->isSetRequestId() ) 
                 {
-                    echo("                RequestId\n");
-                    echo("                    " . $responseMetadata->getRequestId() . "\n");
+
+                    fwrite( $responseLogHandle, "Request ID: " . $responseMetadata->getRequestId() . "\n");
+
                 }
             } 
 
-            echo("            ResponseHeaderMetadata: " . $response->getResponseHeaderMetadata() . "\n");
+            fwrite( $responseLogHandle, "Response Header Metadata: " . $response->getResponseHeaderMetadata() . "\n" );
+
         } catch (MarketplaceWebService_Exception $ex) {
-            echo("Caught Exception: " . $ex->getMessage() . "\n");
-            echo("Response Status Code: " . $ex->getStatusCode() . "\n");
-            echo("Error Code: " . $ex->getErrorCode() . "\n");
-            echo("Error Type: " . $ex->getErrorType() . "\n");
-            echo("Request ID: " . $ex->getRequestId() . "\n");
-            echo("XML: " . $ex->getXML() . "\n");
-            echo("ResponseHeaderMetadata: " . $ex->getResponseHeaderMetadata() . "\n");
+
+            $handle = fopen( WOO_AMZ_ERROR_LOG, 'a+');
+
+            fwrite( $handle, time() . "\n" );
+            fwrite( $handle, 'Caught Exception: ' . $ex->getMessage() . "\n");
+            fwrite( $handle, 'Response Status Code: ' . $ex->getStatusCode() . "\n");
+            fwrite( $handle, 'Error Code: ' . $ex->getErrorCode() . "\n");
+            fwrite( $handle, 'Error Type: ' . $ex->getErrorType() . "\n");
+            fwrite( $handle, 'Request ID: ' . $ex->getRequestId() . "\n");
+            fwrite( $handle, 'XML: ' . $ex->getXML() . "\n");
+            fwrite( $handle, 'ResponseHeaderMetaData: ' . $ex->getResponseHeaderMetadata() . "\n");
+            fwrite( $handle, "END ERROR\n\n");
+
+            fclose( $handle );
+            
         }
 
     }
