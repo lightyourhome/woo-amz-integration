@@ -4,6 +4,17 @@ All notable theme changes should be added to this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [ 0.7.0 ]
+
+## Added
+
+- Error log to Class MWS_FEED
+
+## Changed
+
+- Reformatted invoke feed methods in Class MWS_FEED
+- Invoke method exception handling 
+
 ## [ 0.6.0 ] - 7.28.2020 - Most recent stable version for Amazon MWS
 
 ## Added
