@@ -39,8 +39,8 @@ define( 'WOO_AMZ_INTEGRATION_VERSION', '0.7.0' );
 
 define('WOO_AMZ_PLUGIN_DIR', ABSPATH . 'wp-content/plugins/woo-amz-integration/');
 define('WOO_AMZ_INV_FILE_PATH', ABSPATH . 'wp-content/uploads/amz_inventory.txt');
-define('WOO_AMZ_RESPONSE_LOG', ABSPATH . 'wp-content/uploads/amz_response_log.txt');
-define('WOO_AMZ_ERROR_LOG', ABSPATH . 'wp-content/uploads/amz_error_log.txt');
+define('WOO_AMZ_RESPONSE_LOG', ABSPATH . 'wp-content/uploads/amz_response_log');
+define('WOO_AMZ_ERROR_LOG', ABSPATH . 'wp-content/uploads/amz_error_log.text');
 
 /**
  * The code that runs during plugin activation.
@@ -295,7 +295,7 @@ function tfs_trigger_script_query_string() {
  */
 function run_woo_amz_integration() {
 
-	//$initFeed = new TFS_MWS_FEED( 'FeedResult' );
+	$initFeed = new TFS_MWS_FEED( 'SubmitFeed' );
 	
 
 	if ( tfs_trigger_script_query_string() == true ) {
