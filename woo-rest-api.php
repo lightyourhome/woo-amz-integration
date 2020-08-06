@@ -338,7 +338,7 @@ class Woo_REST_API {
             //when finished, mark as completed
             if ( $status_obj !== NULL ) {
 
-                if ( $products_processed + count( $all_products ) > $status_obj->products_to_process ) {
+                if ( $products_processed > $status_obj->products_to_process ) {
 
                     self::tfs_update_row( 0, $current_page_count, $total_products, $products_processed + count( $all_products ), 1 );
                         
