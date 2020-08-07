@@ -9,6 +9,12 @@
 
 class TFS_DB_MAN {
 
+    public function __construct() {
+
+
+        
+    }
+
     /**
      * Inserts a row into the plugin custom table
      * 
@@ -20,7 +26,7 @@ class TFS_DB_MAN {
      * @param int $products_processed - the current number of products processed
      * @param bool $completed - whether or not the current export is completed
      */
-    private static function tfs_insert_row( $id, $products_to_process, $current_page, $products_processed, $completed = 0 ) {
+    public static function tfs_insert_row( $id, $products_to_process, $current_page, $products_processed, $completed = 0 ) {
 
         global $wpdb;
 
@@ -43,7 +49,7 @@ class TFS_DB_MAN {
      * 
      * @since 0.9.0
      */
-    private static function tfs_delete_row() {
+    public static function tfs_delete_row() {
 
         global $wpdb;
 
@@ -63,7 +69,7 @@ class TFS_DB_MAN {
      * @since 0.5.0
      * 
      */
-    private static function tfs_reset_row_data() {
+    public static function tfs_reset_row_data() {
 
         global $wpdb;
 
@@ -95,7 +101,7 @@ class TFS_DB_MAN {
      * @param int $products_processed - the current number of products processed
      * @param bool $completed - whether or not the current export is completed
      */
-    private static function tfs_update_row( $id, $current_page, $total_products, $products_processed, $completed = 0 ) {
+    public static function tfs_update_row( $id, $current_page, $total_products, $products_processed, $completed = 0 ) {
 
        global $wpdb;
 
