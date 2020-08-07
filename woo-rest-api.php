@@ -179,13 +179,16 @@ class Woo_REST_API {
      */
     public static function tfs_get_product_data() {
 
+        //Get an instance of the TFS_DB_MAN object
+        $dbman = new TFS_DB_MAN();
+
         self::$feed_running = TRUE;
 
         $total_products = self::tfs_get_product_count();
 
         $all_products = [];
 
-        $status_obj = self::tfs_check_product_feed_download_status();
+        $status_obj = $dbman->tfs_check_product_feed_download_status();
 
         $page = 0;
 
@@ -207,8 +210,7 @@ class Woo_REST_API {
 
         if ( $status_obj !== NULL && $status_obj->completed !== FALSE ) {
 
-            //populate the row
-            self::tfs_update_row( 0, $current_page_count, $total_products, $products_processed );
+            $dbman->tfs_update_row( 0, $current_page_count, $total_products, $products_processed );
     
         }    
     
@@ -223,7 +225,7 @@ class Woo_REST_API {
 
                 if ( $products_processed > $status_obj->products_to_process ) {
 
-                    self::tfs_update_row( 0, $current_page_count, $total_products, $products_processed + count( $all_products ), 1 );
+                    $dbman->tfs_update_row( 0, $current_page_count, $total_products, $products_processed + count( $all_products ), 1 );
                         
                     break;
     
@@ -244,9 +246,9 @@ class Woo_REST_API {
             $all_products = array_merge( $all_products, $products);
             $current_page_count++;
             $page++;
-        
-            self::tfs_update_row( 0, $current_page_count, $total_products, $products_processed + sizeOf( $all_products ) );
-    
+
+            $dbman->tfs_update_row( 0, $current_page_count, $total_products, $products_processed + sizeOf( $all_products ) );
+            
         } while ( $page < 5 );
 
 
@@ -254,9 +256,9 @@ class Woo_REST_API {
 
         if ( $status_obj !== NULL && $status_obj->completed == 1 ) {
 
-            self::tfs_delete_row();
+            $dbman->tfs_delete_row();
 
-            self::tfs_insert_row( 0, 0, 0, 0 );
+            $dbman->tfs_insert_row( 0, 0, 0, 0 );
             
             return FALSE;
 
