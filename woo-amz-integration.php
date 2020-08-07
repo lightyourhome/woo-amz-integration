@@ -304,16 +304,12 @@ function run_woo_amz_integration() {
 		$plugin->run();
 
 		$init_woo_api = new Woo_REST_API();
-
-		$init_file_handler = new Woo_Amz_File_Handler();
 		
 	}
 
 	if ( tfs_processing_script_query_string() == true ) {
 
 		Woo_REST_API::tfs_restart_product_data_feed();
-
-		$init_file_handler = new Woo_Amz_File_Handler();
 
 	}
 

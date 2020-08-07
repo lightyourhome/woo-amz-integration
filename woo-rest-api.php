@@ -22,6 +22,7 @@ class Woo_REST_API {
      */
     public static $tfs_product_data = NULL;
 
+
     public static $feed_running = FALSE;
 
 
@@ -88,13 +89,65 @@ class Woo_REST_API {
      * 
      * @since 0.2.0
      */
-    private static function tfs_get_all_product_variations() {
+    private static function tfs_get_product_variation_data( $variable_product_id ) {
 
         //use woocommerce rest api for this
 
-        //print_r($woocommerce->get('products/<product_id>/variations'));
+        $woocommerce = self::tfs_start_http_client();
 
+        $variation_object = $woocommerce->get('products/' . $variable_product_id . '/variations');
 
+        $decoded_variation_json = [];
+        $complete_variation_data = [];
+
+        /**
+         * Decode the variation object
+         */
+        foreach ( $variation_object as $obj ) {
+
+            $decoded_variation_data = json_decode( json_encode( $obj ), true );
+
+            array_push( $decoded_variation_json, $decoded_variation_data );
+
+        }
+
+        foreach( $decoded_variation_json as $product ) {
+    
+            $price = null;
+
+            if ( ! empty( $product['sale_price'] ) && $product['sale_price'] > 0 ) {
+
+                $price = $product['sale_price'];
+
+            } else {
+
+                $price = $product['regular_price'];
+
+            }
+
+            /**
+            * Format the variation data before returning it
+            */
+            array_push( $complete_variation_data, 
+            
+                array( 
+
+                    'type'                => 'variation', //TODO: REMOVE ONCE RELEASED
+                    'sku'                 => $product['sku'], 
+                    'price'               => $price, 
+                    'minimum-price'       => $price, 
+                    'maximum-price'       => '', 
+                    'quantity'            => $product['stock_quantity'], 
+                    'handling-time'       => '', 
+                    'fullfilment-channel' => ''
+
+                )
+
+            );
+
+        }
+
+        return $complete_variation_data;
 
     }
 
@@ -350,7 +403,7 @@ class Woo_REST_API {
 
             try {
         
-                $products = $woocommerce->get( 'products', array( 'per_page' => 100, 'page' => $current_page_count ) );
+                $products = $woocommerce->get( 'products', array( 'per_page' => 25, 'page' => $current_page_count ) );
             
             } catch (HttpClientException $e) {
             
@@ -400,9 +453,18 @@ class Woo_REST_API {
 
         } else {
 
+            //Decoded JSON from WooCommerce REST API
             $decoded = [];
+
+            //Variable and Simple product data from current run
             $complete_product_data = [];
-    
+
+            //Product Variation data from current run
+            $complete_variation_data = [];
+            
+            /**
+             * Decode the returned Woo REST API object
+             */
             foreach ( $product_data_stdclass as $obj ) {
     
                 $decoded_product_data = json_decode( json_encode( $obj ), true );
@@ -414,7 +476,10 @@ class Woo_REST_API {
             foreach( $decoded as $product ) {
     
                 $price = null;
-    
+                
+                /**
+                 * If the product has a sale price, use that instead of the regular price
+                 */
                 if ( ! empty( $product['sale_price'] ) && $product['sale_price'] > 0 ) {
     
                     $price = $product['sale_price'];
@@ -424,26 +489,67 @@ class Woo_REST_API {
                     $price = $product['regular_price'];
     
                 }
-    
-                array_push( $complete_product_data, 
+
+                /**
+                 * Pass any variable products to variation data handler
+                 */
+                if ( $product['type'] == 'variable' ) {
+
+                    $write_variation_data_to_file = new Woo_Amz_File_Handler( self::tfs_get_product_variation_data( $product['id'] ) );
+
+                }
                 
-                    array( 
+                /**
+                 * Format the product data before passing it to Woo_Amz_File_Handler
+                 * Variable and Simple products will have different data
+                 */
+                if ( $product['type'] == 'variable' ) {
+
+                    array_push( $complete_product_data, 
+                    
+                        array(
+
+                            'type'                => $product['type'], //TODO: REMOVE ONCE RELEASED
+                            'sku'                 => $product['sku'],                        
+                            'price'               => '', 
+                            'minimum-price'       => '', 
+                            'maximum-price'       => '', 
+                            'quantity'            => '', 
+                            'handling-time'       => '', 
+                            'fullfilment-channel' => ''    
+
+                        ) 
+                
+                    );
+
+                } elseif ( $product['type'] == 'simple' ) {
+
+                    array_push( $complete_product_data, 
+                
+                        array( 
+                            
+                            'type'                => $product['type'], //TODO: REMOVE ONCE RELEASED
+                            'sku'                 => $product['sku'],                        
+                            'price'               => $price, 
+                            'minimum-price'       => $price, 
+                            'maximum-price'       => '', 
+                            'quantity'            => $product['stock_quantity'], 
+                            'handling-time'       => '', 
+                            'fullfilment-channel' => ''
+        
+                        )
     
-                        'sku'                 => $product['sku'], 
-                        'price'               => $price, 
-                        'minimum-price'       => $price, 
-                        'maximum-price'       => '', 
-                        'quantity'            => $product['stock_quantity'], 
-                        'handling-time'       => '', 
-                        'fullfilment-channel' => ''
-    
-                    )
-    
-                );
-    
+                    );
+
+                }
+
             }
-    
+
             self::$tfs_product_data = $complete_product_data;
+
+            $write_to_file = new Woo_Amz_File_Handler( $complete_product_data );
+            
+            // self::$tfs_variation_data = $complete_variation_data;
 
         }
 
