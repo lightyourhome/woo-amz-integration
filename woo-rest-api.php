@@ -4,7 +4,7 @@
  * The class responsible for communicating with WooCommerce REST API and retrieving products
  * 
  * @since 0.1.0
- * @version 0.5.0
+ * @version 0.9.0
  */
 
 defined( 'ABSPATH' ) or die( 'You do not have sufficient permissions to access this page.' );

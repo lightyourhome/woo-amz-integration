@@ -4,7 +4,7 @@
  * The class responsible for generating Inventory/Pricing files for use with Amazon MWS
  * 
  * @since 0.4.0
- * @version 0.5.0
+ * @version 0.9.0
  */
 
 defined( 'ABSPATH' ) or die( 'You do not have sufficient permissions to access this page.' );
