@@ -549,8 +549,6 @@ class Woo_REST_API {
 
             $write_to_file = new Woo_Amz_File_Handler( $complete_product_data );
             
-            // self::$tfs_variation_data = $complete_variation_data;
-
         }
 
     }
