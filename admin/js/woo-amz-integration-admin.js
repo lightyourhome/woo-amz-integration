@@ -21,7 +21,7 @@
 		
 						if ( feedEnabled ) {
 			
-							tfsWooAmzAjax( feedEnabled );
+							tfsWooAmzAjax( feedEnabled, false, true );
 	
 							$('#send_inventory').hide();
 	
@@ -39,10 +39,33 @@
 			
 						} else {
 		
-							alert('Enable Feed and Save before running!');
+							alert('Enable Feed and click "Save Settings" before running!');
 		
 						}
 			
+					});
+
+					$( '#feed_continue' ).click(function() {
+
+						if ( feedEnabled ) {
+
+							tfsWooAmzAjax( feedEnabled, true, false );
+
+							$('#send_inventory').hide();
+	
+							$('#feed-progress').show();
+	
+							$('#feed-progress').html('<p>Current Progress: <strong>Loading...</strong></p>');
+	
+							$('#feed-status').show();
+							$('#feed-status-text').html('<p>Current Status: <strong>Starting</strong></p>');
+	
+							$('#download_inventory').hide();
+	
+							$('#feed-warning').show();
+
+						}
+
 					});
 	
 				}
@@ -57,7 +80,7 @@
 	tfsInitAdminPage();
 
 
-	function tfsWooAmzAjax( value, timer = null ) {
+	function tfsWooAmzAjax( value, continueFeed, restartFeed, timer = null ) {
 
 		console.log('okay');
 
@@ -71,7 +94,9 @@
 				method: 'GET',
 				url: tfs_woo_amz_int_object.api_url + 'woo-amz-feed/',
 				data: {
-				  enabled: value
+				  enabled: value,
+				  continue: continueFeed,
+				  restart: restartFeed
 				},
 				beforeSend: function ( xhr ) {
 
