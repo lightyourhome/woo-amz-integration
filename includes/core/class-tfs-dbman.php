@@ -12,7 +12,6 @@ class TFS_DB_MAN {
     public function __construct() {
 
 
-        
     }
 
     /**
