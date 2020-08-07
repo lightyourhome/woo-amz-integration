@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Database functions to class TFS_DB_MAN
 - Feed incomplete warning in plugin options interface
+- Continue feed button to plugin options interface
 
 ## Removed
 

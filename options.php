@@ -115,7 +115,14 @@ class Woo_Amz_Integration_Settings_Page {
 				 settings_fields( 'woo-amz-integration' );
 				 do_settings_sections( 'woo-amz-integration' ); ?>
 				<input name="submit" class="button button-primary" type="submit" value="<?php esc_attr_e( 'Save Settings' ); ?>" />
-                <input id="feed_submit" name="submit" class="button button-primary" type="button" value="<?php if ( Woo_Amz_File_Handler::tfs_check_if_inv_file_exists() ) : esc_attr_e( 'Create New Feed' ); else : esc_attr_e( 'Create Feed' ); endif; ?>" />
+
+				<?php if ( $download_status !== NULL && $download_status->products_processed < $download_status->products_to_process ) : ?>
+
+					<input id="feed_continue" name="submit" class="button button-primary" type="button" value="<?php esc_attr_e( 'Continue Feed' ); ?>" />
+
+				<?php endif; ?>
+
+                <input id="feed_submit" name="submit" class="button button-primary" type="button" value="<?php esc_attr_e( 'Create New Feed' ); ?>" />
 				<a href="<?php echo site_url('/wp-content/uploads/amz_inventory.txt'); ?>" class="button button-primary" download>Download Inventory File</a>
 				<input id="send_inventory" name="submit" class="button button-primary" type="button" value="<?php esc_attr_e( 'Send Inventory to Amazon' ); ?>" style="display: none;" />
 		</form>
