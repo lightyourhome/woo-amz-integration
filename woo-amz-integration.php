@@ -104,6 +104,13 @@ register_deactivation_hook( __FILE__, 'deactivate_woo_amz_integration' );
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
+require plugin_dir_path( __FILE__ ) . 'includes/core/class-tfs-dbman.php';
+
+
+/**
+ * The core plugin class that is used to define internationalization,
+ * admin-specific hooks, and public-facing site hooks.
+ */
 require plugin_dir_path( __FILE__ ) . 'includes/class-woo-amz-integration.php';
 
 /**
