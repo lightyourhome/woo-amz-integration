@@ -12,9 +12,12 @@ defined( 'ABSPATH' ) or die( 'You do not have sufficient permissions to access t
 
 class Woo_Amz_File_Handler {
 
-    public function __construct() {
+    public function __construct( $data ) {
 
-        self::tfs_write_to_file( Woo_REST_API::$tfs_product_data );
+        self::tfs_write_to_file( $data );
+
+        // self::tfs_write_to_file( Woo_REST_API::$tfs_product_data );
+        // self::tfs_write_to_file( Woo_REST_API::$tfs_variation_data );
 
     }
 
@@ -59,7 +62,7 @@ class Woo_Amz_File_Handler {
           
             if ( ! file_exists($file) ) {
     
-                $headings = "sku\t price\tminimum-seller-allowed-price\tmaximum-seller-allowed-price\tquantity\thandling-time\tfullfilment-channel";
+                $headings = "type\tsku\tprice\tminimum-seller-allowed-price\tmaximum-seller-allowed-price\tquantity\thandling-time\tfullfilment-channel";
     
                 file_put_contents( $file, $headings , FILE_APPEND );
         
@@ -67,7 +70,7 @@ class Woo_Amz_File_Handler {
       
             foreach ( $data as $line ) {
     
-                $formatted_line  = $line['sku'] . "\t" . $line['price'] . "\t" . $line['minimum-price'];
+                $formatted_line  = $line['type'] . "\t" . $line['sku'] . "\t" . $line['price'] . "\t" . $line['minimum-price'];
     
                 $formatted_line .= "\t" . $line['maximum-price'] . "\t" . $line['quantity'] . "\t" . $line['handling-time'];
     

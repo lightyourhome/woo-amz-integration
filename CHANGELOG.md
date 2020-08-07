@@ -4,6 +4,19 @@ All notable theme changes should be added to this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [ 0.8.0 ] - complete product download with variations successful
+
+## Added
+
+- Product variation support
+- Product variations to inventory file
+- File data parameters to Woo_Amz_File_Handler constructor
+- Woo_Amz_File_Handler initialization to class Woo_REST_API
+
+## Removed
+
+- File Handler initialization from function run_woo_amz_integration()
+
 ## [ 0.7.1 ]
 
 ## Fixed

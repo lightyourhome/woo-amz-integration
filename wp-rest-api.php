@@ -62,7 +62,7 @@ class Tfs_WP_REST_API {
 
                         $init_woo_rest_api = new Woo_REST_API();
 
-                        $init_file_handler = new Woo_Amz_File_Handler();
+                        //$init_file_handler = new Woo_Amz_File_Handler();
 
                         if ( $feed_status !== NULL ) {
 
