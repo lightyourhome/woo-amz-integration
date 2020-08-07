@@ -4,7 +4,7 @@
  * The class responsible for interacting with the Wordpress REST API
  * 
  * @since 0.3.0
- * @version 0.5.0
+ * @version 0.9.0
  */
 
 defined( 'ABSPATH' ) or die( 'You do not have sufficient permissions to access this page.' );
@@ -45,8 +45,10 @@ class Tfs_WP_REST_API {
             'callback' => function($request) {
 
                 $params = $request->get_params();
+
+                $dbman = new TFS_DB_MAN();
                
-                $feed_status = Woo_REST_API::tfs_check_product_feed_download_status();
+                $feed_status = $dbman->tfs_check_product_feed_download_status();
 
                 $completed = 0;
 
