@@ -67,6 +67,11 @@ class Tfs_WP_REST_API {
                         * so the feed will reset from the next REST API call
                         */
                         if ( $params['restart'] == "true" ) {
+
+                            //get an instance of the file handler class
+                            $file_handler = new Woo_Amz_File_Handler();
+
+                            $file_handler->tfs_delete_inv_file();
     
                             $dbman->tfs_delete_row();
     

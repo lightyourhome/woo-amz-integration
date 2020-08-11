@@ -6,9 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [ 0.9.0 ]
 
-## Notable feature
+## Notable features
 
 - Stop and restart feed creation functionality now working
+- Inventory file now deleted and recreated on feed restart
 
 ## Added
 
@@ -17,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Continue feed button to plugin options interface
 - Feed Continue support in woo-amz-integration-admin.js
 - Continue and Restart Feed functionality (still a bit buggy)
+- File deletion handler to class Woo_Amz_File_Handler
 
 ## Removed
 
