@@ -58,33 +58,79 @@ class Tfs_WP_REST_API {
 
                 }
 
-                if ( isset( $params['enabled'] ) && $params['enabled'] == true ) {
+                if ( isset( $params['enabled'] ) && $params['enabled'] == TRUE ) {
 
                     if ( Woo_REST_API::$feed_running !== TRUE ) {
 
-                        $init_woo_rest_api = new Woo_REST_API();
+                        /**
+                        * reset the feed and return continue_after_reset as true
+                        * so the feed will reset from the next REST API call
+                        */
+                        if ( $params['restart'] == "true" ) {
+    
+                            $dbman->tfs_delete_row();
+    
+                            $dbman->tfs_insert_row( 0, 0, 0, 0 );                
+        
+                            if ( $feed_status !== NULL ) {
 
-                        //$init_file_handler = new Woo_Amz_File_Handler();
+                                $status = array(
 
-                        if ( $feed_status !== NULL ) {
+                                    'status'               => $feed_status,
+                                    'continue_after_reset' => TRUE
 
-                            return wp_json_encode( $feed_status );
+                                );
+    
+                                return wp_json_encode( $status ); //wp_json_encode( $params );
+    
+                            }
+                            
+                        /**
+                         * Run the feed or continue its execution
+                         */
+                        } elseif ( $params['run'] == "true" ) {
 
-                        }
+                            $init_woo_rest_api = new Woo_REST_API();
+    
+                            if ( $feed_status !== NULL ) {
+    
+                                $status = array(
 
-                    } else {
+                                    'status'               => $feed_status,
+                                    'continue_after_reset' => FALSE
 
-                        if ( $feed_status !== NULL ) {
+                                );
 
-                            return wp_json_encode( $feed_status );
+                                return wp_json_encode( $status );
+    
+                            }                    
+    
+                        } else {
+    
+                            if ( $feed_status !== NULL ) {
 
+                                $status = array(
+
+                                    'status'               => $feed_status,
+                                    'continue_after_reset' => FALSE
+
+                                );
+    
+                                return wp_json_encode( $status );
+    
+                            }
+    
                         }
 
                     }
 
+                    //continue the feed
+                    
+
                 } 
 
             } //end callback
+
         ) ); //end array()
 
     }
