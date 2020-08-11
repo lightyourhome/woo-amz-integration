@@ -109,11 +109,16 @@ class Tfs_WP_REST_API {
                                 return wp_json_encode( $status );
     
                             }
-                            
-                        } else if ( $params['send_feed'] == "true" ) {
+                        
+                        /**
+                         * Submit feed to Amazon MWS
+                         */
+                        } elseif ( $params['sendFeed'] == "true" ) {
 
 
                             $initFeed = new TFS_MWS_FEED( 'SubmitFeed' );
+
+                            return wp_json_encode( TFS_MWS_FEED::$submit_feed_response );
 
     
                         } else {

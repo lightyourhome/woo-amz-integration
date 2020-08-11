@@ -109,6 +109,7 @@ class Woo_Amz_Integration_Settings_Page {
             <div id="feed-progress"></div>
 			<div id="feed-status"><img id="ajax-loader" src="<?php echo site_url('/wp-content/plugins/woo-amz-integration/assets/images/ajax-loader.gif'); ?>"><div id="feed-status-text"></div></div>
 			<div id="feed-warning"><strong>The feed is currently running. Please do not close or refresh this page.</strong></div>
+			<div id="feed-warning-amz" style="display: none;"><strong>The feed is currently being submitted and processed by Amazon. Please do not close or refresh this page.</strong></div>
 			<br />
 			<form id="woo-amz-admin-settings-form" action="options.php" method="post">
 				<?php 
