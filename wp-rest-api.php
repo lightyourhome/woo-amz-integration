@@ -108,7 +108,13 @@ class Tfs_WP_REST_API {
 
                                 return wp_json_encode( $status );
     
-                            }                    
+                            }
+                            
+                        } else if ( $params['send_feed'] == "true" ) {
+
+
+                            $initFeed = new TFS_MWS_FEED( 'SubmitFeed' );
+
     
                         } else {
     

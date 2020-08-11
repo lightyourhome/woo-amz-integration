@@ -124,7 +124,7 @@ class Woo_Amz_Integration_Settings_Page {
 
                 <input id="feed_submit" name="submit" class="button button-primary" type="button" value="<?php esc_attr_e( 'Create New Feed' ); ?>" />
 				<a href="<?php echo site_url('/wp-content/uploads/amz_inventory.txt'); ?>" class="button button-primary" download>Download Inventory File</a>
-				<input id="send_inventory" name="submit" class="button button-primary" type="button" value="<?php esc_attr_e( 'Send Inventory to Amazon' ); ?>" style="display: none;" />
+				<input id="send_inventory" name="submit" class="button button-primary" type="button" value="<?php esc_attr_e( 'Send Inventory to Amazon' ); ?>" />
 		</form>
 	
 		<?php
