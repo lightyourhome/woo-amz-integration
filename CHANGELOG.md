@@ -6,18 +6,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [ 0.9.0 ]
 
+## Notable feature
+
+- Stop and restart feed creation functionality now working
+
 ## Added
 
 - Database functions to class TFS_DB_MAN
 - Feed incomplete warning in plugin options interface
 - Continue feed button to plugin options interface
 - Feed Continue support in woo-amz-integration-admin.js
+- Continue and Restart Feed functionality (still a bit buggy)
 
 ## Removed
 
 - Database functions from woo-rest-api.php
 
-## [ 0.8.0 ] - complete product download with variations successful
+## [ 0.8.0 ]
+
+## Notable feature
+
+- complete product download with variations successful
 
 ## Added
 
