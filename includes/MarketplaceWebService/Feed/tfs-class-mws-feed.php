@@ -50,6 +50,19 @@ class TFS_MWS_FEED {
      */
     public static $submit_feed_response = NULL;
 
+    /**
+     * Stores invokeGetFeedSubmissionList response to return to frontend via REST API
+     * 
+     * @since 0.10.0
+     */
+    public static $feed_list_response = NULL;
+
+    /**
+     * Stores invokeGetFeedSubmissionResult response to return to frontend via REST API
+     * 
+     * @since 0.10.0
+     */
+    public static $feed_result_response = NULL;
 
     /**
      * Construct New TFS_MWS_FEED
