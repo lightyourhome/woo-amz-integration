@@ -12,12 +12,29 @@ defined( 'ABSPATH' ) or die( 'You do not have sufficient permissions to access t
 
 class Woo_Amz_File_Handler {
 
-    public function __construct( $data ) {
 
-        self::tfs_write_to_file( $data );
+    public function __construct( $data = NULL ) {
 
-        // self::tfs_write_to_file( Woo_REST_API::$tfs_product_data );
-        // self::tfs_write_to_file( Woo_REST_API::$tfs_variation_data );
+        if ( $data !== NULL ) {
+
+            self::tfs_write_to_file( $data );
+
+        } 
+
+    }
+
+    /**
+     * If an inventory file exists, delete it
+     * 
+     * @since 0.9.0
+     */
+    public static function tfs_delete_inv_file() {
+
+        if ( file_exists( WOO_AMZ_INV_FILE_PATH ) ) {
+
+            unlink( WOO_AMZ_INV_FILE_PATH );
+
+        }
 
     }
 
@@ -29,9 +46,7 @@ class Woo_Amz_File_Handler {
      */
     public static function tfs_check_if_inv_file_exists() {
 
-        $file = 'c:\\xampp\\htdocs\\lightyourhome.com_april\\wp-content\\uploads\\amz_inventory.txt';
-
-		if ( file_exists( $file ) ) { 
+		if ( file_exists( WOO_AMZ_INV_FILE_PATH ) ) { 
 
 			return true;
 			
