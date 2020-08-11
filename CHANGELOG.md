@@ -12,7 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Added
 
-- Send feed condition to WP REST API
+- Send feed condition and response to WP REST API
+- Feed submission list condition and response to REST API
+- Feed submission result condition and response to REST API
 - send feed event listener in woo-amz-integration-admin.js
 - Inventory feed submission to Amazon MWS via plugin admin area
 - REST API feed submission response (submission response data was previously only available in logs)
