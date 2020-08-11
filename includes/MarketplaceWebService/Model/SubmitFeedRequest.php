@@ -63,8 +63,12 @@ class MarketplaceWebService_Model_SubmitFeedRequest extends MarketplaceWebServic
 	
     public function __construct($data = null)
     {
+        
     	self::$DEFAULT_CONTENT_TYPE = new MarketplaceWebService_Model_ContentType(
-    		array('ContentType' => 'application/octet-stream'));
+
+            array('ContentType' => 'application/octet-stream')
+        
+        );
     		
         // Here we're setting the content-type field directly to the object, but beware the actual 
         // method of construction from associative arrays from the client interface would do something like:

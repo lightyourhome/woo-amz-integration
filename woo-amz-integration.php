@@ -180,7 +180,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model/Subm
 
 require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model/SubmitFeedResult.php';
 
-require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model/ContentType.php';
+//require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model/ContentType.php';
 
 require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model/GetFeedSubmissionListRequest.php';
 

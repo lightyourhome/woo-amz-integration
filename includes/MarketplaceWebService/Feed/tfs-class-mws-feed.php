@@ -43,6 +43,13 @@ class TFS_MWS_FEED {
      */
     private static $feedResultMD5 = NULL;
 
+    /**
+     * Stores invokeSubmitFeed response to return to frontend via REST API
+     * 
+     * @since 0.10.0
+     */
+    public static $submit_feed_response = NULL;
+
 
     /**
      * Construct New TFS_MWS_FEED
@@ -231,6 +238,20 @@ class TFS_MWS_FEED {
     */
     private static function invokeSubmitFeed( $service, $request ) {
 
+        //feed submission status that is returned on frontend
+        $status = array(
+
+            'feed_submission_id'             => self::$feedSubmissionId,
+            'feed_type'                      => '',
+            'submitted_date'                 => '',
+            'feed_processing_status'         => '',
+            'feed_processing_start_date'     => '',
+            'feed_processing_completed_date' => '',
+            'request_id'                     => '',
+            'response_metadata'              => ''
+
+        );
+
         try {
 
             $response = $service->submitFeed($request);
@@ -252,11 +273,15 @@ class TFS_MWS_FEED {
 
                         self::$feedSubmissionId = $feedSubmissionInfo->getFeedSubmissionId();
 
+                        $status['feed_submission_id'] = self::$feedSubmissionId;
+
                         fwrite( $responseLogHandle, "\nFeed Submission ID: " . self::$feedSubmissionId . "\n" );
 
                     }
 
                     if ( $feedSubmissionInfo->isSetFeedType() ) {
+
+                        $status['feed_type'] = $feedSubmissionInfo->getFeedType();
 
                         fwrite( $responseLogHandle, 'Feed Type: ' . $feedSubmissionInfo->getFeedType() . "\n" );
 
@@ -264,11 +289,15 @@ class TFS_MWS_FEED {
 
                     if ( $feedSubmissionInfo->isSetSubmittedDate() ) {
 
+                        $status['submitted_date'] = $feedSubmissionInfo->getSubmittedDate()->format(DATE_FORMAT);
+
                         fwrite( $responseLogHandle, 'Submitted Date: ' . $feedSubmissionInfo->getSubmittedDate()->format(DATE_FORMAT) . "\n" );
 
                     }
 
                     if ( $feedSubmissionInfo->isSetFeedProcessingStatus() ) {
+
+                        $status['feed_processing_status'] = $feedSubmissionInfo->getFeedProcessingStatus();
 
                         fwrite( $responseLogHandle, 'Feed Processing Status: ' . $feedSubmissionInfo->getFeedProcessingStatus() . "\n" );
 
@@ -276,11 +305,15 @@ class TFS_MWS_FEED {
 
                     if ( $feedSubmissionInfo->isSetStartedProcessingDate() ) {
 
+                        $status['feed_processing_start_date'] = $feedSubmissionInfo->getStartedProcessingDate()->format(DATA_FORMAT);
+
                         fwrite( $responseLogHandle, 'Feed Processing Start Date: ' . $feedSubmissionInfo->getStartedProcessingDate()->format(DATA_FORMAT) . "\n" );
 
                     }
 
                     if ( $feedSubmissionInfo->isSetCompletedProcessingDate() ) {
+
+                        $status['feed_processing_completed_date'] = $feedSubmissionInfo->getCompletedProcessingDate()->format(DATA_FORMAT);
 
                         fwrite( $responseLogHandle, 'Feed Processing Completed Date: ' . $feedSubmissionInfo->getCompletedProcessingDate()->format(DATA_FORMAT) . "\n" );
 
@@ -296,17 +329,21 @@ class TFS_MWS_FEED {
 
                     if ( $responseMetadata->isSetRequestId() ) {
 
+                        $status['request_id'] = $responseMetadata->getRequestId();
+
                         fwrite( $responseLogHandle, $responseMetadata->getRequestId() . "\n" );
 
                     }
 
-                }
+                } 
+
+                $status['response_metadata'] = $response->getResponseHeaderMetadata();
 
                 fwrite( $responseLogHandle, $response->getResponseHeaderMetadata() . "\n");
 
                 fclose( $responseLogHandle );
 
-                exit;
+                self::$submit_feed_response = $status;
 
             }
                 
