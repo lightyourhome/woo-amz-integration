@@ -23,7 +23,7 @@
 			
 							tfsWooAmzAjax( feedEnabled, false, true );
 	
-							$('#send_inventory').hide();
+							//$('#send_inventory').hide();
 	
 							$('#feed-progress').show();
 	
@@ -55,7 +55,7 @@
 	
 								tfsWooAmzAjax( feedEnabled, true, false );
 	
-								$('#send_inventory').hide();
+								//$('#send_inventory').hide();
 		
 								$('#feed-progress').show();
 		
@@ -77,6 +77,20 @@
 	
 					}
 
+					if ( $( '#send_inventory' ) ) {
+
+						$( '#send_inventory' ).click(function() {
+
+							if ( feedEnabled ) {
+
+								tfsWooAmzAjax( feedEnabled, false, false, true );
+
+							}
+
+						});
+
+					}
+
 				}
 
 			}
@@ -89,7 +103,7 @@
 	tfsInitAdminPage();
 
 
-	function tfsWooAmzAjax( value, runFeed, restartFeed, timer = null ) {
+	function tfsWooAmzAjax( value, runFeed, restartFeed, submitFeed, timer = null ) {
 
 		console.log('okay');
 
@@ -105,7 +119,8 @@
 				data: {
 				  enabled: value,
 				  run: runFeed,
-				  restart: restartFeed
+				  restart: restartFeed,
+				  send_feed: submitFeed,
 				},
 				beforeSend: function ( xhr ) {
 
