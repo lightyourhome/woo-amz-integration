@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Feed Continue support in woo-amz-integration-admin.js
 - Continue and Restart Feed functionality (still a bit buggy)
 - File deletion handler to class Woo_Amz_File_Handler
+- File path constants to class Woo_Amz_File_Handler
 
 ## Removed
 
