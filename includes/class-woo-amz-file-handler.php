@@ -72,14 +72,12 @@ class Woo_Amz_File_Handler {
             return;
 
         } else {
-
-            $file = 'c:\\xampp\\htdocs\\lightyourhome.com_april\\wp-content\\uploads\\amz_inventory.txt';
           
-            if ( ! file_exists($file) ) {
+            if ( ! file_exists( WOO_AMZ_INV_FILE_PATH ) ) {
     
                 $headings = "type\tsku\tprice\tminimum-seller-allowed-price\tmaximum-seller-allowed-price\tquantity\thandling-time\tfullfilment-channel";
     
-                file_put_contents( $file, $headings , FILE_APPEND );
+                file_put_contents( WOO_AMZ_INV_FILE_PATH, $headings , FILE_APPEND );
         
             }
       
@@ -91,7 +89,7 @@ class Woo_Amz_File_Handler {
     
                 $formatted_line .= "\t" . $line['fullfilment-channel'];
     
-                file_put_contents( $file, "\n" . $formatted_line, FILE_APPEND );    
+                file_put_contents( WOO_AMZ_INV_FILE_PATH, "\n" . $formatted_line, FILE_APPEND );    
     
             }
     
