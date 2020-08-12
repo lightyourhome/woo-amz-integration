@@ -578,6 +578,17 @@ class TFS_MWS_FEED {
     */
     private static function invokeGetFeedSubmissionResult($service, $request) 
     {
+
+        //feed list response that is returned on frontend
+        $status = array(
+
+            'result'                      => '',
+            'result_MD5'                  => '',
+            'request_id'                  => '',
+            'response_header_metadata'    => '',
+
+        );
+
         try {
 
             $response = $service->getFeedSubmissionResult($request);
@@ -590,11 +601,15 @@ class TFS_MWS_FEED {
 
                 $getFeedSubmissionResultResult = $response->getGetFeedSubmissionResultResult(); 
 
+                $status['result'] = $getFeedSubmissionResultResult;
+
                 fwrite( "Feed Submission Result: " . $getFeedSubmissionResultResult . "\n" );
                 
                 if ( $getFeedSubmissionResultResult->isSetContentMd5() ) {
 
                     self::$feedResultMD5 = $getFeedSubmissionResultResult->getContentMd5();
+
+                    $status['result_MD5'] = self::$feedResultMD5;
 
                     fwrite( $responseLogHandle, "Content MD5: " . self::$feedResultMD5 . "\n");
 
@@ -610,16 +625,25 @@ class TFS_MWS_FEED {
                 
                 if ( $responseMetadata->isSetRequestId() ) 
                 {
-                    fwrite( $responseLogHandle, "Request ID: " . $responseMetadata->getRequestId() . "\n" );
+
+                    $request_id = $responseMetadata->getRequestId();
+
+                    $status['status_id'] = $request_id;
+
+                    fwrite( $responseLogHandle, "Request ID: " . $request_id . "\n" );
 
                 }
             } 
 
-            fwrite( $responseLogHandle, "ResponseHeaderMetadata: " . $response->getResponseHeaderMetadata() . "\n");
+            $response_header_metadata = $response->getResponseHeaderMetadata();
+
+            $status['response_header_metadata'] = $response_header_metadata;
+
+            self::$feed_result_response = $status;
+
+            fwrite( $responseLogHandle, "ResponseHeaderMetadata: " . $response_header_metadata . "\n");
 
             fclose( $responseLogHandle );
-
-            exit;
 
         } catch (MarketplaceWebService_Exception $ex) {
 
