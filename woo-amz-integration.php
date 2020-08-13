@@ -41,6 +41,7 @@ define('WOO_AMZ_PLUGIN_DIR', 	ABSPATH . 'wp-content/plugins/woo-amz-integration/
 define('WOO_AMZ_INV_FILE_PATH', ABSPATH . 'wp-content/uploads/amz_inventory.txt');
 define('WOO_AMZ_RESPONSE_LOG',  ABSPATH . 'wp-content/uploads/amz_response_log');
 define('WOO_AMZ_ERROR_LOG', 	ABSPATH . 'wp-content/uploads/amz_error_log.txt');
+define('MWS_CONFIG',            plugin_dir_path( __FILE__ ) . 'includes/Config/.config.inc.php');
 
 /**
  * The code that runs during plugin activation.
