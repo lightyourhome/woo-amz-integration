@@ -20,7 +20,7 @@
  * Get Feed Submission Result
  */
 
-include_once ('.config.inc.php'); 
+include_once MWS_CONFIG;
 
 /************************************************************************
 * Uncomment to configure the client instance. Configuration settings

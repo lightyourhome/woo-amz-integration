@@ -8,7 +8,7 @@
  * 
  */
 
-include_once ('.config.inc.php'); 
+include_once MWS_CONFIG;
 require_once WOO_AMZ_PLUGIN_DIR . 'includes/MarketplaceWebService/Client.php';
 
 class TFS_MWS_FEED {

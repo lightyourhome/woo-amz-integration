@@ -21,7 +21,7 @@
  * Register Destination Sample
  */
 
-require_once('.config.inc.php');
+require_once(MWS_CONFIG);
 
 /************************************************************************
  * Instantiate Implementation of MWSSubscriptionsService
