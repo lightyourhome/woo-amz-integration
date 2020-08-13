@@ -201,7 +201,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model/GetF
  * 
  * @since 0.6.0
  */
-require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Feed/.config.inc.php';
+//require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Feed/.config.inc.php';
 
 /** TODO: Remove old sample files when no longer needed */
 /**
