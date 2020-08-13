@@ -232,6 +232,13 @@ require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model/GetF
  */
 require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Feed/tfs-class-mws-feed.php';
 
+/**
+ * Class responsible for registering and deregistering destinations for the MWS Subscription service
+ * 
+ * @since 0.11.0
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/MWSSubscriptionsService/Destination/class-mws-destination.php';
+
 
 /**
  * Enqueue admin scripts
@@ -309,7 +316,8 @@ function run_woo_amz_integration() {
 		$plugin = new Woo_Amz_Integration();
 		$plugin->run();
 
-		$init_woo_api = new Woo_REST_API();
+		// $init_woo_api = new Woo_REST_API();
+		$init_reg_destination = new MWS_Destination( 'RegisterDestination' );
 		
 	}
 

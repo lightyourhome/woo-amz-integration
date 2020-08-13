@@ -9,6 +9,10 @@
 
 require_once(MWS_CONFIG);
 require_once WOO_AMZ_PLUGIN_DIR . 'includes/MWSSubscriptionsService/Client.php';
+require_once WOO_AMZ_PLUGIN_DIR . 'includes/MWSSubscriptionsService/Model/RegisterDestinationInput.php';
+require_once WOO_AMZ_PLUGIN_DIR . 'includes/MWSSubscriptionsService/Model/RegisterDestinationResponse.php';
+require_once WOO_AMZ_PLUGIN_DIR . 'includes/MWSSubscriptionsService/Model/RegisterDestinationResult.php';
+
 
 
 class MWS_Destination {
@@ -24,12 +28,9 @@ class MWS_Destination {
 
         if ( $action == 'RegisterDestination' ) {
 
-            self::invokeRegisterDestination( self::createRegisterDestinationRequest() );
+            self::invokeRegisterDestination( self::getSubscriptionServiceHttpClient(),  self::createRegisterDestinationRequest() );
 
         }
-
-
-
 
     }
 
@@ -40,23 +41,27 @@ class MWS_Destination {
      */
     private static function getSubscriptionServiceHttpClient() {
 
-        $config = array(
-
-            'ServiceURL'    => self::$serviceUrl,
-            'ProxyHost'     => null,
-            'ProxyPort'     => -1,
+        $config = array (
+            'ServiceURL' => self::$serviceUrl,
+            'ProxyHost' => null,
+            'ProxyPort' => -1,
+            'ProxyUsername' => null,
+            'ProxyPassword' => null,
             'MaxErrorRetry' => 3,
-
         );
-
+         
         $service = new MWSSubscriptionsService_Client(
+
             AWS_ACCESS_KEY_ID,
             AWS_SECRET_ACCESS_KEY,
             APPLICATION_NAME,
             APPLICATION_VERSION,
             $config
+
         );
 
+        return $service;
+         
     }
 
     /**
