@@ -20,9 +20,13 @@ class MWS_Destination {
      */
     private static $serviceUrl = "https://mws.amazonservices.com/Subscriptions/2013-07-01";
 
-    function __construct() {
+    function __construct( $action = NULL ) {
 
+        if ( $action == 'RegisterDestination' ) {
 
+            self::invokeRegisterDestination( self::createRegisterDestinationRequest() );
+
+        }
 
 
 
@@ -78,7 +82,7 @@ class MWS_Destination {
     * @param MWSSubscriptionsService_Interface $service instance of MWSSubscriptionsService_Interface
     * @param mixed $request MWSSubscriptionsService_Model_RegisterDestination or array of parameters
     */
-    private static function invokeRegisterDestination(MWSSubscriptionsService_Interface $service, $request)
+    private static function invokeRegisterDestination( $service, $request)
     {
 
         try {
