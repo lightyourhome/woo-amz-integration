@@ -32,13 +32,7 @@ require_once(MWS_CONFIG);
  ***********************************************************************/
 // More endpoints are listed in the MWS Developer Guide
 // North America:
-//$serviceUrl = "https://mws.amazonservices.com/Subscriptions/2013-07-01";
-// Europe
-//$serviceUrl = "https://mws-eu.amazonservices.com/Subscriptions/2013-07-01";
-// Japan
-//$serviceUrl = "https://mws.amazonservices.jp/Subscriptions/2013-07-01";
-// China
-//$serviceUrl = "https://mws.amazonservices.com.cn/Subscriptions/2013-07-01";
+$serviceUrl = "https://mws.amazonservices.com/Subscriptions/2013-07-01";
 
 
  $config = array (
