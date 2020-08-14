@@ -2,6 +2,8 @@
 
 /**
 * Class Responsible for registering and deregistering MWS Destinations
+*
+* DESTINATION WAS ALREADY REGISTERED. THIS WILL NOT WORK PROPERLY.
 * 
 * @since 0.11.0
 * @version 0.1.0
@@ -71,9 +73,24 @@ class MWS_Destination {
      */
     private static function createRegisterDestinationRequest() {
 
-        $request = new MWSSubscriptionsService_Model_RegisterDestinationInput();
+        $params = array(
 
-        $request->setSellerId(MERCHANT_ID);
+            'SellerId'      => MERCHANT_ID,
+            'MWSAuthToken'  => MERCHANT_ID,
+            'MarketplaceId' => 'ATVPDKIKX0DER',
+            'Destination'   => array( 'DeliveryChannel' => 'SQS', 'AttributeList' => array( 'sqsQueueUrl' => 'https://sqs.us-east-2.amazonaws.com/838401002254/woo_amz_queue') ),
+
+        );
+
+        $request = new MWSSubscriptionsService_Model_RegisterDestinationInput( $params );
+
+
+
+    //    $request->setSellerId(MERCHANT_ID);
+    //    $request->setMarketplaceId( 'ATVPDKIKX0DER' );
+
+    //    $request->setMWSAuthToken(MERCHANT_ID);
+    //    $request->setDestination( 'DeliveryChannel' => 'SQS', 'AttributeList' => array( 'sqsQueueUrl' => 'https://sqs.us-east-2.amazonaws.com/838401002254/woo_amz_queue') ) );
 
         return $request;
        
@@ -91,6 +108,7 @@ class MWS_Destination {
     {
 
         try {
+            
             $response = $service->RegisterDestination($request);
 
             echo ("Service Response\n");
