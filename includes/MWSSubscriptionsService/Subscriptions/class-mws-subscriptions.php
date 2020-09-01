@@ -8,6 +8,14 @@
 */
 
 require_once(MWS_CONFIG);
+require_once WOO_AMZ_PLUGIN_DIR . 'includes/MWSSubscriptionsService/Client.php';
+require_once WOO_AMZ_PLUGIN_DIR . 'includes/MWSSubscriptionsService/Model/CreateSubscriptionInput.php';
+require_once WOO_AMZ_PLUGIN_DIR . 'includes/MWSSubscriptionsService/Model/CreateSubscriptionResponse.php';
+require_once WOO_AMZ_PLUGIN_DIR . 'includes/MWSSubscriptionsService/Model/CreateSubscriptionResult.php';
+require_once WOO_AMZ_PLUGIN_DIR . 'includes/MWSSubscriptionsService/Model/Subscription.php';
+require_once WOO_AMZ_PLUGIN_DIR . 'includes/MWSSubscriptionsService/Model/Destination.php';
+require_once WOO_AMZ_PLUGIN_DIR . 'includes/MWSSubscriptionsService/Model/AttributeKeyValueList.php';
+require_once WOO_AMZ_PLUGIN_DIR . 'includes/MWSSubscriptionsService/Model/AttributeKeyValue.php';
 
 
 class MWS_Subscriptions {
@@ -30,6 +38,13 @@ class MWS_Subscriptions {
 
     }
     
+    /**
+     * Get an instance of the MWS Subscriptions Client
+     * 
+     * @since 0.11.0
+     * 
+     * @return MWSSubscriptionsService_Client client
+     */
     private static function getHttpClient() {
 
         $config = array (
@@ -52,27 +67,68 @@ class MWS_Subscriptions {
          
         return $service;
 
-
     }
 
+    /**
+     * Create a subscription request to be used in invoking method invokeCreateSubscription
+     * 
+     * @since 0.11.0
+     * 
+     * @return MWSSubscriptionsService_Model_CreateSubscriptionInput $return
+     */
     private static function createSubscriptionRequest() {
 
-        $params = array(
+        $feed = new TFS_MWS_FEED();
 
-            'SellerId'       => MERCHANT_ID,
-            'MWSAuthToken'   => MERCHANT_ID,
-            'MarketplaceId'  => 'ATVPDKIKX0DER',
-            'Subscription'   => 'FeedProcessingFinished'
+        $request = new MWSSubscriptionsService_Model_CreateSubscriptionInput();
 
-        );
+        /**
+         * Get an instance of MWSSubscriptionsService_Model_AttributeKeyValue and set the parameters
+         */
+        $attributeKeyValue = new MWSSubscriptionsService_Model_AttributeKeyValue();
+        $attributeKeyValue->setKey('sqsQueueUrl');
+        $attributeKeyValue->setValue('https://sqs.us-east-2.amazonaws.com/838401002254/woo_amz_queue');
 
+        /**
+         * Get an instance of MWSSubscriptionsService_Model_AttributeKeyValueList and set the parameters
+         */
+        $attributeKeyValueList = new MWSSubscriptionsService_Model_AttributeKeyValueList();
+        $attributeKeyValueList->setmember( $attributeKeyValue );
 
-        $request = new MWSSubscriptionsService_Model_CreateSubscriptionInput( $params );
-       
+        /**
+         * Get an instance of MWSSubscriptionsService_Model_Destination, set the delivery channel and attribute list
+         */
+        $destination = new MWSSubscriptionsService_Model_Destination();
+        $destination->setDeliveryChannel( 'SQS' );
+        $destination->setAttributeList( $attributeKeyValueList );
+
+        /**
+         * Get an instance of MWSSubscriptionsService_Model_Subscription and set its parameters
+         */
+        $subscription = new MWSSubscriptionsService_Model_Subscription();
+        $subscription->setNotificationType('FeedProcessingFinished');
+        $subscription->setDestination( $destination );
+        $subscription->setIsEnabled(  TRUE );
+
+        /**
+         * Get an instance of MWSSubscriptionsService_Model_CreateSubscriptionInput and set its parameters
+         */
+        $request = new MWSSubscriptionsService_Model_CreateSubscriptionInput();
+        $request->setSellerId( MERCHANT_ID );
+        $request->setMWSAuthToken( MERCHANT_ID );
+        $request->setMarketplaceId('ATVPDKIKX0DER');
+        $request->setSubscription( $subscription );
+        
         return $request;
 
     }
 
+    /**
+     * Create an MWS Subscription and Log the Response
+     * 
+     * @param MWSSubscriptionsService_Client $service
+     * @param MWSSubscriptionsService_Model_CreateSubscriptionInput $request
+     */
     private static function invokeCreateSubscription($service, $request)
     {
         try {
