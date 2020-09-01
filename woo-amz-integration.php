@@ -239,6 +239,14 @@ require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Feed/tfs-c
  */
 require plugin_dir_path( __FILE__ ) . 'includes/MWSSubscriptionsService/Destination/class-mws-destination.php';
 
+/**
+ * Class responsible for creating and updating MWS notification subscriptions
+ * 
+ * @since 0.11.0
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/MWSSubscriptionsService/Subscriptions/class-mws-subscriptions.php';
+
+
 
 /**
  * Enqueue admin scripts
@@ -317,7 +325,8 @@ function run_woo_amz_integration() {
 		$plugin->run();
 
 		// $init_woo_api = new Woo_REST_API();
-		$init_reg_destination = new MWS_Destination( 'RegisterDestination' );
+		//$init_reg_destination = new MWS_Destination( 'RegisterDestination' );
+		$init = new MWS_Subscriptions( 'CreateSubscription' );
 		
 	}
 
