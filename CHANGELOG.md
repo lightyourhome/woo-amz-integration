@@ -4,10 +4,11 @@ All notable theme changes should be added to this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [ 0.11.0 ] - Subscription Creation Stable
+## [ 0.11.0 ] - Subscription Creation Stable, Subscription Update Stable, Test Notifications Stable
 
 ## Added
 
+- Test Notification Support
 - Additional Model files for test notification support
 - Class MWS_Test_Notifications to handle testing notifications with registered subscription destinations
 - Update subscription support

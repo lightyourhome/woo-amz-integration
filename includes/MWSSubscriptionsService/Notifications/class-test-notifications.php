@@ -6,6 +6,12 @@
 * @since 0.11.0
 */
 
+require_once(MWS_CONFIG);
+require_once WOO_AMZ_PLUGIN_DIR . 'includes/MWSSubscriptionsService/Model/SendTestNotificationToDestinationInput.php';
+require_once WOO_AMZ_PLUGIN_DIR . 'includes/MWSSubscriptionsService/Model/SendTestNotificationToDestinationResponse.php';
+require_once WOO_AMZ_PLUGIN_DIR . 'includes/MWSSubscriptionsService/Model/SendTestNotificationToDestinationResult.php';
+
+
 class MWS_Test_Notifications {
 
     /**
@@ -66,8 +72,6 @@ class MWS_Test_Notifications {
      */
     private static function createSendTestNotificationToDestinationRequest() {
 
-        $feed = new TFS_MWS_FEED();
-
         /**
          * Get an instance of MWSSubscriptionsService_Model_AttributeKeyValue and set the parameters
          */
@@ -99,11 +103,11 @@ class MWS_Test_Notifications {
         /**
          * Get an instance of MWSSubscriptionsService_Model_CreateSubscriptionInput and set its parameters
          */
-        $request = new MWSSubscriptionsService_Model_CreateSubscriptionInput();
+        $request = new MWSSubscriptionsService_Model_SendTestNotificationToDestinationInput();
         $request->setSellerId( MERCHANT_ID );
         $request->setMWSAuthToken( MERCHANT_ID );
         $request->setMarketplaceId('ATVPDKIKX0DER');
-        $request->setSubscription( $subscription );
+        $request->setDestination( $destination );
         
         return $request;
 
