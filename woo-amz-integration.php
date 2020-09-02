@@ -246,6 +246,13 @@ require plugin_dir_path( __FILE__ ) . 'includes/MWSSubscriptionsService/Destinat
  */
 require plugin_dir_path( __FILE__ ) . 'includes/MWSSubscriptionsService/Subscriptions/class-mws-subscriptions.php';
 
+/**
+ * Class responsible for creating and updating MWS notification subscriptions
+ * 
+ * @since 0.11.0
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/MWSSubscriptionsService/Notifications/class-test-notifications.php';
+
 
 
 /**
@@ -327,8 +334,8 @@ function run_woo_amz_integration() {
 		// $init_woo_api = new Woo_REST_API();
 		//$init_reg_destination = new MWS_Destination( 'RegisterDestination' );
 		//$init = new MWS_Subscriptions( 'CreateSubscription' );
-		$init = new MWS_Subscriptions( 'UpdateSubscription' );
-
+		//$init = new MWS_Subscriptions( 'UpdateSubscription' );
+		$init = new MWS_Test_Notifications( 'TestInventoryNotification' );
 
 	}
 
