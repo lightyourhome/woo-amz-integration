@@ -326,8 +326,10 @@ function run_woo_amz_integration() {
 
 		// $init_woo_api = new Woo_REST_API();
 		//$init_reg_destination = new MWS_Destination( 'RegisterDestination' );
-		$init = new MWS_Subscriptions( 'CreateSubscription' );
-		
+		//$init = new MWS_Subscriptions( 'CreateSubscription' );
+		$init = new MWS_Subscriptions( 'UpdateSubscription' );
+
+
 	}
 
 	if ( tfs_processing_script_query_string() == true ) {
