@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Added
 
+- Class MWS_Test_Notifications to handle testing notifications with registered subscription destinations
 - Update subscription support
 - Class MWS_Subscriptions to handle creating and updating Amazon MWS Subscriptions
 - Subscription Creation via Amazon SQS
