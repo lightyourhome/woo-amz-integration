@@ -16,7 +16,7 @@
  * Plugin Name:       WooCommerce Amazon Integration
  * Plugin URI:        https://lightyourhome.com
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           0.4.0
+ * Version:           0.5.0
  * Author:            Jim Merk
  * Author URI:        https://lightyourhome.com
  * License:           GPL-2.0+
@@ -64,7 +64,7 @@ function tfs_create_custom_table() {
 	$tbl_name = $wpdb->prefix . 'tfs_amz_int_data';
 
 	$sql = "CREATE TABLE IF NOT EXISTS $tbl_name (
-		id mediumint(9) NOT NULL AUTO_INCREMENT,
+		id mediumint(9) NOT NULL,
 		products_to_process mediumint(9) NOT NULL,
 		current_page VARCHAR(100) NOT NULL,
 		products_processed mediumint(9) NOT NULL,

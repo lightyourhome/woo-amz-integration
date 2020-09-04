@@ -4,7 +4,7 @@
  * The class responsible for interacting with the Wordpress REST API
  * 
  * @since 0.3.0
- * @version 0.4.0
+ * @version 0.5.0
  */
 
 defined( 'ABSPATH' ) or die( 'You do not have sufficient permissions to access this page.' );
@@ -45,17 +45,42 @@ class Tfs_WP_REST_API {
             'callback' => function($request) {
 
                 $params = $request->get_params();
+               
+                $feed_status = Woo_REST_API::tfs_check_product_feed_download_status();
+
+                $completed = 0;
+
+                if ( $feed_status !== NULL && $feed_status->completed ) {
+
+                    $completed = $feed_status->completed;
+
+                }
 
                 if ( isset( $params['enabled'] ) && $params['enabled'] == true ) {
 
-                   // Woo_REST_API::tfs_get_product_data();
+                    if ( Woo_REST_API::$feed_running !== TRUE ) {
+
+                        $init_woo_rest_api = new Woo_REST_API();
+
+                        $init_file_handler = new Woo_Amz_File_Handler();
+
+                        if ( $feed_status !== NULL ) {
+
+                            return wp_json_encode( $feed_status );
+
+                        }
+
+                    } else {
+
+                        if ( $feed_status !== NULL ) {
+
+                            return wp_json_encode( $feed_status );
+
+                        }
+
+                    }
 
                 } 
-
-                if ( isset( $params['check'] ) and $params['check'] == true ) {
-
-
-                }
 
             } //end callback
         ) ); //end array()
