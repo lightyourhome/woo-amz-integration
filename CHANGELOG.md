@@ -4,6 +4,25 @@ All notable theme changes should be added to this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [ 0.10.0 ]
+
+## Notable features
+
+- Inventory feed can now be submitted to Amazon MWS via plugin admin area
+
+## Added
+
+- Send feed condition and response to WP REST API
+- Feed submission list condition and response to REST API
+- Feed submission result condition and response to REST API
+- send feed event listener in woo-amz-integration-admin.js
+- Inventory feed submission to Amazon MWS via plugin admin area
+- REST API feed submission response (submission response data was previously only available in logs)
+
+## Fixed
+
+- PHP 5 warning where the object passed to isSetParameters() in Model/ContentType.php could not institute count() (fixed by casting the object to an array)
+
 ## [ 0.9.0 ]
 
 ## Notable features

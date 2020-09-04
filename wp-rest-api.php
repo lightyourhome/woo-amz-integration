@@ -108,8 +108,41 @@ class Tfs_WP_REST_API {
 
                                 return wp_json_encode( $status );
     
-                            }                    
-    
+                            }
+                        
+                        /**
+                         * Submit feed to Amazon MWS
+                         */
+                        } elseif ( $params['sendFeed'] == "true" ) {
+
+
+                            $init_submit_feed = new TFS_MWS_FEED( 'SubmitFeed' );
+
+                            return wp_json_encode( TFS_MWS_FEED::$submit_feed_response );
+
+                        
+                        /**
+                         * Check Feed Submission processing status
+                         */
+                        } elseif ( $params['feedList'] == "true" ) {
+
+
+                            $init_feed_list = new TFS_MWS_FEED( 'FeedList' );
+
+                            return wp_json_encode( TFS_MWS_FEED::$feed_list_response );
+
+
+                        /**
+                         * Return the feed completion response
+                         */
+                        } elseif ( $params['feedCompletionResponse'] == "true" ) { 
+                            
+
+                            $init_feed_result = new TFS_MWS_FEED( 'FeedResult' );
+
+                            return wp_json_encode( TFS_MWS_FEED::$feed_result_response );
+
+                            
                         } else {
     
                             if ( $feed_status !== NULL ) {

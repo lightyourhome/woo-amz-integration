@@ -21,9 +21,9 @@
 		
 						if ( feedEnabled ) {
 			
-							tfsWooAmzAjax( feedEnabled, false, true );
+							tfsWooAmzAjax( feedEnabled, false, true, false );
 	
-							$('#send_inventory').hide();
+							//$('#send_inventory').hide();
 	
 							$('#feed-progress').show();
 	
@@ -53,9 +53,9 @@
 
 							if ( feedEnabled ) {
 	
-								tfsWooAmzAjax( feedEnabled, true, false );
+								tfsWooAmzAjax( feedEnabled, true, false, false );
 	
-								$('#send_inventory').hide();
+								//$('#send_inventory').hide();
 		
 								$('#feed-progress').show();
 		
@@ -77,6 +77,22 @@
 	
 					}
 
+					if ( $( '#send_inventory' ).length ) {
+
+						$( '#send_inventory' ).click(function() {
+
+							if ( feedEnabled ) {
+
+								tfsWooAmzAjax( feedEnabled, false, false, true );
+
+								$('#feed-warning-amz').show();
+
+							}
+
+						});
+
+					}
+
 				}
 
 			}
@@ -89,7 +105,7 @@
 	tfsInitAdminPage();
 
 
-	function tfsWooAmzAjax( value, runFeed, restartFeed, timer = null ) {
+	function tfsWooAmzAjax( value, runFeed, restartFeed, submitFeed, timer = null ) {
 
 		console.log('okay');
 
@@ -105,7 +121,8 @@
 				data: {
 				  enabled: value,
 				  run: runFeed,
-				  restart: restartFeed
+				  restart: restartFeed,
+				  sendFeed: submitFeed
 				},
 				beforeSend: function ( xhr ) {
 
@@ -123,13 +140,11 @@
 
 					let parsed_data = JSON.parse( data.responseJSON );
 
-					console.log( parsed_data );
-
 	
 					//try to see if parsed_data.completed is available yet, if not, the feed is new so start it
 					try {
 
-						if ( parsed_data['status'].completed == 0 ) {
+						if ( submitFeed == false && parsed_data['status'].completed == 0 ) {
 		
 							$('#feed-progress').html('<p>Current Progress: '+ parsed_data['status'].products_processed + ' / ' + parsed_data['status'].products_to_process + '</p>');
 		
@@ -152,7 +167,7 @@
 							
 							timer = setTimeout(worker, 5000);
 		
-						} else if ( parsed_data['status'].completed == 1 ) {
+						} else if ( submitFeed == false && parsed_data['status'].completed == 1 ) {
 				
 							$('#feed-progress').hide();
 		
@@ -170,6 +185,10 @@
 
 							$('#download_inventory').show();
 								
+						} else if ( submitFeed == true ) {
+
+							console.log(parsed_data);
+
 						}
 
 					} catch {

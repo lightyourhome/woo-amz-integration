@@ -180,7 +180,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model/Subm
 
 require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model/SubmitFeedResult.php';
 
-require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model/ContentType.php';
+//require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model/ContentType.php';
 
 require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model/GetFeedSubmissionListRequest.php';
 
@@ -301,12 +301,10 @@ function tfs_trigger_script_query_string() {
  * @since    0.1.0
  */
 function run_woo_amz_integration() {
-
-	//$initFeed = new TFS_MWS_FEED( 'SubmitFeed' );
 	
 
 	if ( tfs_trigger_script_query_string() == true ) {
-
+		
 		$plugin = new Woo_Amz_Integration();
 		$plugin->run();
 
