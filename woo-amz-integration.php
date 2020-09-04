@@ -16,7 +16,7 @@
  * Plugin Name:       WooCommerce Amazon Integration
  * Plugin URI:        https://lightyourhome.com
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           0.3.0
+ * Version:           0.4.0
  * Author:            Jim Merk
  * Author URI:        https://lightyourhome.com
  * License:           GPL-2.0+
@@ -116,6 +116,16 @@ require plugin_dir_path( __FILE__ ) . 'wp-rest-api.php';
  */
 require plugin_dir_path( __FILE__ ) . 'options.php';
 
+/**
+ * The class responsible for handling file creation
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/class-woo-amz-file-handler.php';
+
+/**
+ * Enqueue admin scripts
+ * 
+ * @since 0.3.0
+ */
 function tfs_enqueue_scripts() {
 
 	wp_register_script('tfs_woo_amz_int', site_url('/wp-content/plugins/woo-amz-integration/admin/js/woo-amz-integration-admin.js?07032020'), true);
@@ -125,7 +135,12 @@ function tfs_enqueue_scripts() {
 add_action( 'admin_enqueue_scripts', 'tfs_enqueue_scripts');
 
 
-
+/**
+ * Adds processing query string for use with CRON
+ * 
+ * @since 0.3.0
+ * @return boolean - whether or not the query string has been hit
+ */
 function tfs_processing_script_query_string() {
 
 	$query_string = $_SERVER['QUERY_STRING'];
@@ -142,6 +157,12 @@ function tfs_processing_script_query_string() {
 
 }
 
+/**
+ * Adds trigger query string to start feed execution with CRON
+ * 
+ * @since 0.3.0
+ * @return boolean - whether or not the query string has been hit
+ */
 function tfs_trigger_script_query_string() {
 
 	$query_string = $_SERVER['QUERY_STRING'];
@@ -176,12 +197,16 @@ function run_woo_amz_integration() {
 		$plugin->run();
 
 		$init_woo_api = new Woo_REST_API();
+
+		$init_file_handler = new Woo_Amz_File_Handler();
 		
 	}
 
 	if ( tfs_processing_script_query_string() == true ) {
 
 		Woo_REST_API::tfs_restart_product_data_feed();
+
+		$init_file_handler = new Woo_Amz_File_Handler();
 
 	}
 

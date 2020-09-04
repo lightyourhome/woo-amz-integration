@@ -5,7 +5,7 @@
  * Menu and Settings Pages
  * 
  * @since v0.3.0
- * @version 0.1.0
+ * @version 0.4.0
  */
 
 defined( 'ABSPATH' ) or die( 'You do not have sufficient permissions to access this page.' );
