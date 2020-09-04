@@ -16,7 +16,7 @@
  * Plugin Name:       WooCommerce Amazon Integration
  * Plugin URI:        https://lightyourhome.com
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           0.7.0
+ * Version:           0.7.1
  * Author:            Jim Merk
  * Author URI:        https://lightyourhome.com
  * License:           GPL-2.0+
@@ -35,12 +35,12 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'WOO_AMZ_INTEGRATION_VERSION', '0.7.0' );
+define( 'WOO_AMZ_INTEGRATION_VERSION', '0.7.1' );
 
-define('WOO_AMZ_PLUGIN_DIR', ABSPATH . 'wp-content/plugins/woo-amz-integration/');
+define('WOO_AMZ_PLUGIN_DIR', 	ABSPATH . 'wp-content/plugins/woo-amz-integration/');
 define('WOO_AMZ_INV_FILE_PATH', ABSPATH . 'wp-content/uploads/amz_inventory.txt');
-define('WOO_AMZ_RESPONSE_LOG', ABSPATH . 'wp-content/uploads/amz_response_log');
-define('WOO_AMZ_ERROR_LOG', ABSPATH . 'wp-content/uploads/amz_error_log.txt');
+define('WOO_AMZ_RESPONSE_LOG',  ABSPATH . 'wp-content/uploads/amz_response_log');
+define('WOO_AMZ_ERROR_LOG', 	ABSPATH . 'wp-content/uploads/amz_error_log.txt');
 
 /**
  * The code that runs during plugin activation.
@@ -295,7 +295,7 @@ function tfs_trigger_script_query_string() {
  */
 function run_woo_amz_integration() {
 
-	$initFeed = new TFS_MWS_FEED( 'SubmitFeed' );
+	//$initFeed = new TFS_MWS_FEED( 'SubmitFeed' );
 	
 
 	if ( tfs_trigger_script_query_string() == true ) {
