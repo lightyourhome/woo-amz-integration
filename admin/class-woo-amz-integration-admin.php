@@ -96,7 +96,7 @@ class Woo_Amz_Integration_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/woo-amz-integration-admin.js', array( 'jquery' ), $this->version, false );
+		//wp_enqueue_script( 'tfs_woo_amz_int', plugin_dir_url( __FILE__ ) . 'js/woo-amz-integration-admin.js', array( 'jquery' ), $this->version, true );
 
 	}
 
