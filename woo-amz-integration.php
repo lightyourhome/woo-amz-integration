@@ -16,7 +16,7 @@
  * Plugin Name:       WooCommerce Amazon Integration
  * Plugin URI:        https://lightyourhome.com
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           0.7.1
+ * Version:           0.9.0
  * Author:            Jim Merk
  * Author URI:        https://lightyourhome.com
  * License:           GPL-2.0+
@@ -99,6 +99,13 @@ register_activation_hook( __FILE__, 'tfs_create_custom_table' );
  * Deactivation Hooks
  */
 register_deactivation_hook( __FILE__, 'deactivate_woo_amz_integration' );
+
+/**
+ * The core plugin class that is used to define internationalization,
+ * admin-specific hooks, and public-facing site hooks.
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/core/class-tfs-dbman.php';
+
 
 /**
  * The core plugin class that is used to define internationalization,

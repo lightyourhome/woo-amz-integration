@@ -69,6 +69,9 @@ class Woo_Amz_Integration_Settings_Page {
 		//set the options property
 		self::$woo_amz_int_options = get_option('woo_amz_int_settings');
 
+		$dbman = new TFS_DB_MAN();
+		$download_status = $dbman->tfs_check_product_feed_download_status();
+
 		?>
 	
 		<h1>WooCommerce Amazon Integration Settings</h1>
@@ -76,13 +79,29 @@ class Woo_Amz_Integration_Settings_Page {
 			<?php if ( Woo_Amz_File_Handler::tfs_check_if_inv_file_exists() ) : ?>
 
 				<div class="notice is-dismissable notice-info">
-					<p><?php _e( 'An Inventory File Currently Exists. You can create a new one below.', 'lightyourhome.com' ); ?></p>
+					<p>
+						<strong><?php _e( 'An Inventory File Currently Exists. ' ); ?></strong>
+						<?php _e( 'You can create a new one below.', 'lightyourhome.com' ); ?>
+					</p>
 				</div>
 
 			<?php else : ?>
 
 				<div class="notice is-dismissable notice-error">
 					<p><?php _e( 'An Inventory File Does Not Currently Exist. You can create a new one below.', 'lightyourhome.com' ); ?></p>
+				</div>
+
+			<?php endif; ?>
+
+			<?php if ( $download_status !== NULL && $download_status->products_processed < $download_status->products_to_process ) : ?>
+
+				<div class="notice is-dismissable notice-error">
+					<p>
+						<strong>
+							<?php _e( 'The last feed run did not finish. ' ); ?>
+						</strong>
+						<?php _e('Click "Continue Feed" to continue the last feed, or "Restart Feed" to restart it.'); ?>
+					</p>
 				</div>
 
 			<?php endif; ?>
@@ -96,7 +115,14 @@ class Woo_Amz_Integration_Settings_Page {
 				 settings_fields( 'woo-amz-integration' );
 				 do_settings_sections( 'woo-amz-integration' ); ?>
 				<input name="submit" class="button button-primary" type="submit" value="<?php esc_attr_e( 'Save Settings' ); ?>" />
-                <input id="feed_submit" name="submit" class="button button-primary" type="button" value="<?php if ( Woo_Amz_File_Handler::tfs_check_if_inv_file_exists() ) : esc_attr_e( 'Create New Feed' ); else : esc_attr_e( 'Create Feed' ); endif; ?>" />
+
+				<?php if ( $download_status !== NULL && $download_status->products_processed < $download_status->products_to_process ) : ?>
+
+					<input id="feed_continue" name="submit" class="button button-primary" type="button" value="<?php esc_attr_e( 'Continue Feed' ); ?>" />
+
+				<?php endif; ?>
+
+                <input id="feed_submit" name="submit" class="button button-primary" type="button" value="<?php esc_attr_e( 'Create New Feed' ); ?>" />
 				<a href="<?php echo site_url('/wp-content/uploads/amz_inventory.txt'); ?>" class="button button-primary" download>Download Inventory File</a>
 				<input id="send_inventory" name="submit" class="button button-primary" type="button" value="<?php esc_attr_e( 'Send Inventory to Amazon' ); ?>" style="display: none;" />
 		</form>

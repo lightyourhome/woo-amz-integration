@@ -4,7 +4,7 @@
  * The class responsible for interacting with the Wordpress REST API
  * 
  * @since 0.3.0
- * @version 0.5.0
+ * @version 0.9.0
  */
 
 defined( 'ABSPATH' ) or die( 'You do not have sufficient permissions to access this page.' );
@@ -45,8 +45,10 @@ class Tfs_WP_REST_API {
             'callback' => function($request) {
 
                 $params = $request->get_params();
+
+                $dbman = new TFS_DB_MAN();
                
-                $feed_status = Woo_REST_API::tfs_check_product_feed_download_status();
+                $feed_status = $dbman->tfs_check_product_feed_download_status();
 
                 $completed = 0;
 
@@ -56,33 +58,84 @@ class Tfs_WP_REST_API {
 
                 }
 
-                if ( isset( $params['enabled'] ) && $params['enabled'] == true ) {
+                if ( isset( $params['enabled'] ) && $params['enabled'] == TRUE ) {
 
                     if ( Woo_REST_API::$feed_running !== TRUE ) {
 
-                        $init_woo_rest_api = new Woo_REST_API();
+                        /**
+                        * reset the feed and return continue_after_reset as true
+                        * so the feed will reset from the next REST API call
+                        */
+                        if ( $params['restart'] == "true" ) {
 
-                        //$init_file_handler = new Woo_Amz_File_Handler();
+                            //get an instance of the file handler class
+                            $file_handler = new Woo_Amz_File_Handler();
 
-                        if ( $feed_status !== NULL ) {
+                            $file_handler->tfs_delete_inv_file();
+    
+                            $dbman->tfs_delete_row();
+    
+                            $dbman->tfs_insert_row( 0, 0, 0, 0 );                
+        
+                            if ( $feed_status !== NULL ) {
 
-                            return wp_json_encode( $feed_status );
+                                $status = array(
 
-                        }
+                                    'status'               => $feed_status,
+                                    'continue_after_reset' => TRUE
 
-                    } else {
+                                );
+    
+                                return wp_json_encode( $status ); //wp_json_encode( $params );
+    
+                            }
+                            
+                        /**
+                         * Run the feed or continue its execution
+                         */
+                        } elseif ( $params['run'] == "true" ) {
 
-                        if ( $feed_status !== NULL ) {
+                            $init_woo_rest_api = new Woo_REST_API();
+    
+                            if ( $feed_status !== NULL ) {
+    
+                                $status = array(
 
-                            return wp_json_encode( $feed_status );
+                                    'status'               => $feed_status,
+                                    'continue_after_reset' => FALSE
 
+                                );
+
+                                return wp_json_encode( $status );
+    
+                            }                    
+    
+                        } else {
+    
+                            if ( $feed_status !== NULL ) {
+
+                                $status = array(
+
+                                    'status'               => $feed_status,
+                                    'continue_after_reset' => FALSE
+
+                                );
+    
+                                return wp_json_encode( $status );
+    
+                            }
+    
                         }
 
                     }
 
+                    //continue the feed
+                    
+
                 } 
 
             } //end callback
+
         ) ); //end array()
 
     }

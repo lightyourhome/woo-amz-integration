@@ -4,7 +4,32 @@ All notable theme changes should be added to this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [ 0.8.0 ] - complete product download with variations successful
+## [ 0.9.0 ]
+
+## Notable features
+
+- Stop and restart feed creation functionality now working
+- Inventory file now deleted and recreated on feed restart
+
+## Added
+
+- Database functions to class TFS_DB_MAN
+- Feed incomplete warning in plugin options interface
+- Continue feed button to plugin options interface
+- Feed Continue support in woo-amz-integration-admin.js
+- Continue and Restart Feed functionality (still a bit buggy)
+- File deletion handler to class Woo_Amz_File_Handler
+- File path constants to class Woo_Amz_File_Handler
+
+## Removed
+
+- Database functions from woo-rest-api.php
+
+## [ 0.8.0 ]
+
+## Notable feature
+
+- complete product download with variations successful
 
 ## Added
 
