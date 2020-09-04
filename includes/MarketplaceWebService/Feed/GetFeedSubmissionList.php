@@ -20,7 +20,7 @@
  * Get Feed Submission List
  */
 
-include_once ('.config.inc.php'); 
+include_once MWS_CONFIG;
 
 $serviceUrl = "https://mws.amazonservices.com";
 

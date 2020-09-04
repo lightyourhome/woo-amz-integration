@@ -16,7 +16,7 @@
  * Plugin Name:       WooCommerce Amazon Integration
  * Plugin URI:        https://lightyourhome.com
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           0.9.0
+ * Version:           0.11.0
  * Author:            Jim Merk
  * Author URI:        https://lightyourhome.com
  * License:           GPL-2.0+
@@ -35,12 +35,13 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'WOO_AMZ_INTEGRATION_VERSION', '0.7.1' );
+define( 'WOO_AMZ_INTEGRATION_VERSION', '0.11.0' );
 
 define('WOO_AMZ_PLUGIN_DIR', 	ABSPATH . 'wp-content/plugins/woo-amz-integration/');
 define('WOO_AMZ_INV_FILE_PATH', ABSPATH . 'wp-content/uploads/amz_inventory.txt');
 define('WOO_AMZ_RESPONSE_LOG',  ABSPATH . 'wp-content/uploads/amz_response_log');
 define('WOO_AMZ_ERROR_LOG', 	ABSPATH . 'wp-content/uploads/amz_error_log.txt');
+define('MWS_CONFIG',            plugin_dir_path( __FILE__ ) . 'includes/Config/.config.inc.php');
 
 /**
  * The code that runs during plugin activation.
@@ -200,7 +201,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model/GetF
  * 
  * @since 0.6.0
  */
-require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Feed/.config.inc.php';
+//require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Feed/.config.inc.php';
 
 /** TODO: Remove old sample files when no longer needed */
 /**
@@ -230,6 +231,28 @@ require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Feed/.conf
  * @since 0.6.0
  */
 require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Feed/tfs-class-mws-feed.php';
+
+/**
+ * Class responsible for registering and deregistering destinations for the MWS Subscription service
+ * 
+ * @since 0.11.0
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/MWSSubscriptionsService/Destination/class-mws-destination.php';
+
+/**
+ * Class responsible for creating and updating MWS notification subscriptions
+ * 
+ * @since 0.11.0
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/MWSSubscriptionsService/Subscriptions/class-mws-subscriptions.php';
+
+/**
+ * Class responsible for creating and updating MWS notification subscriptions
+ * 
+ * @since 0.11.0
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/MWSSubscriptionsService/Notifications/class-test-notifications.php';
+
 
 
 /**
@@ -308,8 +331,12 @@ function run_woo_amz_integration() {
 		$plugin = new Woo_Amz_Integration();
 		$plugin->run();
 
-		$init_woo_api = new Woo_REST_API();
-		
+		// $init_woo_api = new Woo_REST_API();
+		//$init_reg_destination = new MWS_Destination( 'RegisterDestination' );
+		//$init = new MWS_Subscriptions( 'CreateSubscription' );
+		//$init = new MWS_Subscriptions( 'UpdateSubscription' );
+		$init = new MWS_Test_Notifications( 'TestInventoryNotification' );
+
 	}
 
 	if ( tfs_processing_script_query_string() == true ) {

@@ -8,7 +8,7 @@
  * 
  */
 
-include_once ('.config.inc.php'); 
+include_once MWS_CONFIG;
 require_once WOO_AMZ_PLUGIN_DIR . 'includes/MarketplaceWebService/Client.php';
 
 class TFS_MWS_FEED {
@@ -34,7 +34,7 @@ class TFS_MWS_FEED {
      * 
      * @since 0.6.0
      */
-    private static $feedSubmissionId = NULL;
+    public static $feedSubmissionId = NULL;
 
     /**
      * The final feed submission result MD5, used to check integrity of result response
@@ -249,7 +249,9 @@ class TFS_MWS_FEED {
     * @param MarketplaceWebService_Interface $service instance of MarketplaceWebService_Interface
     * @param mixed $request MarketplaceWebService_Model_SubmitFeed or array of parameters
     */
-    private static function invokeSubmitFeed( $service, $request ) {
+
+    private static function invokeSubmitFeed($service, $request ) {
+
 
         //feed submission response that is returned on frontend
         $status = array(
