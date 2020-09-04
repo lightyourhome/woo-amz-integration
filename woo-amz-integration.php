@@ -37,6 +37,10 @@ if ( ! defined( 'WPINC' ) ) {
  */
 define( 'WOO_AMZ_INTEGRATION_VERSION', '0.1.0' );
 
+define('WOO_AMZ_PLUGIN_DIR', ABSPATH . 'wp-content/plugins/woo-amz-integration/');
+define('WOO_AMZ_INV_FILE_PATH', ABSPATH . 'wp-content/uploads/amz_inventory.txt');
+define('WOO_AMZ_RESPONSE_LOG', ABSPATH . 'wp-content/uploads/amz_response_log.txt');
+
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-woo-amz-integration-activator.php
@@ -122,6 +126,105 @@ require plugin_dir_path( __FILE__ ) . 'options.php';
 require plugin_dir_path( __FILE__ ) . 'includes/class-woo-amz-file-handler.php';
 
 /**
+ * MarketplaceWebService Class responsible for exception handling
+ * 
+ * @since 0.6.0
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Exception.php';
+
+/**
+ * MarketplaceWebService interface
+ * 
+ * @since 0.6.0
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Interface.php';
+
+/**
+ * Creates mock up xml files for MarketplaceWebService responses
+ * 
+ * @since 0.6.0
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Mock.php';
+
+/**
+ * Model class
+ * 
+ * @since 0.6.0
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model.php';
+
+/**
+ * Class that handles the type of request being sent to MarketplaceWebService
+ * 
+ * @since 0.6.0
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/RequestType.php';
+
+/** TODO: DOCUMENT MODEL FILES */
+/**
+ * Class responsible for submitting inventory feed response from MWS
+ * 
+ * @since 0.6.0
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model/SubmitFeedResponse.php';
+
+require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model/SubmitFeedRequest.php';
+
+require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model/SubmitFeedResult.php';
+
+require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model/ContentType.php';
+
+require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model/GetFeedSubmissionListRequest.php';
+
+require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model/GetFeedSubmissionListResponse.php';
+
+require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model/GetFeedSubmissionListResult.php';
+
+require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model/GetFeedSubmissionResultRequest.php';
+
+require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model/GetFeedSubmissionResultResponse.php';
+
+require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Model/GetFeedSubmissionResultResult.php';
+
+
+/**
+ * MarketplaceWebService Client configuration file
+ * 
+ * @since 0.6.0
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Feed/.config.inc.php';
+
+/** TODO: Remove old sample files when no longer needed */
+/**
+ * Class responsible for submitting inventory feed to MarketplaceWebService
+ * 
+ * @since 0.6.0
+ */
+//require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Feed/SubmitFeedphp';
+
+/**
+ * Class responsible for submitting inventory feed to MarketplaceWebService
+ * 
+ * @since 0.6.0
+ */
+//require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Feed/GetFeedSubmissionList.php';
+
+/**
+ * Class responsible for submitting inventory feed to MarketplaceWebService
+ * 
+ * @since 0.6.0
+ */
+//require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Feed/GetFeedSubmissionResult.php';
+
+/**
+ * Class responsible for submitting inventory feed to MarketplaceWebService
+ * 
+ * @since 0.6.0
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/MarketplaceWebService/Feed/tfs-class-mws-feed.php';
+
+
+/**
  * Enqueue admin scripts
  * 
  * @since 0.3.0
@@ -190,6 +293,9 @@ function tfs_trigger_script_query_string() {
  * @since    0.1.0
  */
 function run_woo_amz_integration() {
+
+	//$initFeed = new TFS_MWS_FEED( 'FeedResult' );
+	
 
 	if ( tfs_trigger_script_query_string() == true ) {
 
