@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'WOO_AMZ_INTEGRATION_VERSION', '0.7.1' );
+define( 'WOO_AMZ_INTEGRATION_VERSION', '0.11.0' );
 
 define('WOO_AMZ_PLUGIN_DIR', 	ABSPATH . 'wp-content/plugins/woo-amz-integration/');
 define('WOO_AMZ_INV_FILE_PATH', ABSPATH . 'wp-content/uploads/amz_inventory.txt');
