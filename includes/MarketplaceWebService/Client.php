@@ -829,7 +829,7 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
           		
           	case 500:
           	case 503:
-          		require_once('MarketplaceWebService/Model/ErrorResponse.php');
+          		require_once WOO_AMZ_PLUGIN_DIR . 'includes/MarketplaceWebService/Model/ErrorResponse.php';
 		          $errorResponse = MarketplaceWebService_Model_ErrorResponse::fromXML($response['ResponseBody']);
 		          
 		          // We will not retry throttling errors since this would just add to the throttling problem.
