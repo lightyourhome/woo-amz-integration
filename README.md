@@ -28,6 +28,7 @@ Amazon MWS recommends the following to be implemented to avoid long polling MWS 
 * Amazon SQS (Simple Queue Service)
 * WordPress 5.0 or higher
 * WooCommerce Plugin 3.0 or higher
+* Composer
 * Install below dependencies via Composer
 
 ## Software Dependencies
